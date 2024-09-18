@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Comunidad Cristiana San Juan</title>
+        <link rel="icon" href="images/logos/logo2.svg" type="image/svg+xml"> 
+        <!-- CSS FILES -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/bootstrap-icons.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/slick.css"/>
+
+        <link href="css/tooplate-little-fashion.css" rel="stylesheet">
+        
+
+    </head>
+    
+    <body>
+
+        <section class="preloader">
+            <div class="spinner">
+                <span class="sk-inner-circle"></span>
+            </div>
+        </section>
+    
+        <main>
+
+            <nav class="navbar navbar-expand-lg">
+                <div class="container">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    
+                    <a class="navbar-brand" href="#">
+                        <img src="images/logos/logos2.svg" alt="Comunidad Cristiana" style="max-height: 40px;">
+                    </a>
+                    <!--a class="navbar-brand" >
+                        <strong class="d-none d-lg-inline"><span>Comunidad Cristiana</span> San Juan</strong>
+                        <strong class="d-inline d-lg-none"><span>Comunidad Cristiana</span> SJ</strong>
+                    </a-->
+
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="index.html">Inicio</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Conecta</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="nosotros.html">Nosotros</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Contribuir</a>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+
+            <section>
+                <div class="slick-custom" >
+
+                            <!-- Imagen para pantallas grandes -->
+                <img src="images/slideshow/sanjuan3.jpg" class="img-fluid img-large" alt="">
+
+                <!-- Imagen para pantallas pequeñas -->
+                <img src="images/slideshow/sanjuan4.jpg" class="img-fluid img-small" alt="">
+
+
+                    <div class="slick-bottom" >
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-8 col-10" >
+                                    <h1 class="slick-title">Comunidad Cristiana</h1>
+                                    <h2 class="slick-title">San Juan - Centro</h2>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="team section-padding">
+                <div class="container">
+                    <div class="row text-center">
+
+                        <div class="col-12">
+                            <h2 class="mb-5">¡NOS ALEGRA QUE ESTÉS <span>AQUÍ</span>!</h2>
+                            <h5>Todos necesitamos en algún momento que nos comprendan y ayuden, allí está Jesús, el hijo de Dios para que puedas dejar de batallar y sin esfuerzo te acerques a él y él te dará el descanso que necesitamos.</h5>
+                            <br>
+                            <h5>"La gracia del Señor Jesucristo, el amor de Dios, y la comunión del Espíritu Santo sean con todos vosotros. Amén."</h5>
+                            <h6 style="text-align: right;">- 2 Corintios 13:14</h6>
+                        </div>
+
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="sign-in-form section-padding">
+                <div class="container">
+                    <div class="row">
+                        <!-- Columna 1 -->
+                        <div class="col-lg-5">
+                            <a href="https://www.youtube.com/@comunidadcristianasanjuan3662" class="btn custom-btn social-btn w-100">
+                                <i class="bi "></i>
+                                <h2 class="text-center mb-4">En Línea</h2>
+                            </a>
+                        </div>
+
+                        <!-- Separador -->
+                        <div class="col-lg-1 d-none d-lg-block text-center">
+                            <div class="separator"></div>
+                        </div>
+                        
+                        <p class="p-small-screen"></p>
+            
+                        <!-- Columna 2 -->
+                        <div class="col-lg-5">
+                            
+                            <a href="#" class="btn custom-btn social-btn w-100" data-bs-toggle="modal" data-bs-target="#prayerRequestModal">
+                                <i class="bi"></i>
+                                <h2 class="text-center mb-4">Ora por mí</h2>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+
+<!-- Modal -->
+<div class="modal fade" id="prayerRequestModal" tabindex="-1" aria-labelledby="prayerRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form id="prayerRequestForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="prayerRequest" class="form-label">Contános, ¿Por qué querés que oremos?</label>
+                        <textarea class="form-control" id="prayerRequest" name="prayerRequest" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn custom-btn form-control mt-4 mb-3">
+                        Enviar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            <section class="featured-product section-padding">
+                <div class="container">
+                    <div class="row">
+                        
+                        <div class="col-12 text-center">
+                            <h2 class="mb-5">Próximos Eventos</h2>
+                        </div>
+
+                        <div class="col-lg-4 col-12 mb-3">
+                            <div class="product-thumb">
+                                <a >
+                                    <img src="images/eventos/evento2.jpg" class="img-fluid product-image" alt="">
+                                </a>
+
+
+                                <div class="product-info d-flex">
+                                    <div>
+                                        <h5 class="product-title mb-0">
+                                            <a class="product-title-link">Servicio Especial</a>
+                                        </h5>
+
+                                        <p class="product-p">Septiembre 24, 25, 26, 28 y 29</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-12 mb-3">
+                            <div class="product-thumb">
+                                <a>
+                                    <img src="images/eventos/evento1.jpg" class="img-fluid product-image" alt="">
+                                </a>
+
+
+                                <div class="product-info d-flex">
+                                    <div>
+                                        <h5 class="product-title mb-0">
+                                            <a  class="product-title-link">Reunión Unida Jóvenes y Adolescentes</a>
+                                        </h5>
+
+                                        <p class="product-p">Septiembre 28, 16:00 Lugar: Laprida 143 (o)</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-12">
+                            <div class="product-thumb">
+                                <a >
+                                    <img src="images/eventos/LaSantaCena.jpg" class="img-fluid product-image" alt="">
+                                </a>
+
+                            
+
+                                <div class="product-info d-flex">
+                                    <div>
+                                        <h5 class="product-title mb-0">
+                                            <a  class="product-title-link">Santa Cena Octubre</a>
+                                        </h5>
+
+                                        <p class="product-p">02/10/2024   10:00</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-lg-5 col-10 me-auto mb-4">
+                        <h4 class="text-white mb-3"><a href="index.html">Comunidad Cristiana</a> San Juan</h4>
+                        <p class="copyright-text text-muted mt-lg-5 mb-4 mb-lg-0">Copyright © 2024 <strong>Comunida Crisitana San Juan</strong></p>
+                        <br>
+                    </div>
+
+
+
+                    <div class="col-lg-3 col-4">
+                        <h5 class="text-white mb-3">Social</h5>
+
+                        <ul class="social-icon">
+
+                            <li><a href="https://www.facebook.com/comunidadcristianadelcentro/" class="social-icon-link bi-facebook"></a></li>
+
+                            <li><a href="https://www.youtube.com/@comunidadcristianasanjuan3662" class="social-icon-link bi-youtube"></a></li>
+
+                            <li><a href="https://www.instagram.com/comunidadcristianadelcentro?igsh=d3FnazZhczluN2Rz" class="social-icon-link bi-instagram"></a></li>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+        <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+        <script>
+            // Inicializar EmailJS con tu Public Key
+            emailjs.init("QV6Abl2PH1tFCW3qe"); // Reemplaza con tu Public Key de EmailJS
+        
+            // Manejar el envío del formulario
+            document.getElementById('prayerRequestForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Previene el envío del formulario de la manera predeterminada
+        
+                emailjs.sendForm('service_v7qrfav', 'template_yqe5xq8', this)
+                    .then(function(response) {
+                        // Alerta de éxito
+                        alert('Petición enviada exitosamente.');
+                        // Cierra el modal
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
+                        modal.hide();
+                        // Limpia el formulario
+                        document.getElementById('prayerRequestForm').reset();
+                    }, function(error) {
+                        // Alerta de error
+                        alert('Ocurrió un error. Intenta nuevamente.');
+                    });
+            });
+        </script>
+        
+        
+        <!-- JAVASCRIPT FILES -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script src="js/Headroom.js"></script>
+        <script src="js/jQuery.headroom.js"></script>
+        <script src="js/slick.min.js"></script>
+        <script src="js/custom.js"></script>
+
+    </body>
+</html>
