@@ -22,7 +22,10 @@
         <link rel="stylesheet" href="css/slick.css"/>
 
         <link href="css/tooplate-little-fashion.css" rel="stylesheet">
-
+        <!-- Cargar Firebase desde un CDN -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+        <script type="module" src="js/firebase-events.js"></script>
 
     </head>
     
@@ -263,6 +266,10 @@
                                 </div>
                             </div>
                         </div>
+                                    <!-- Aquí se cargarán los eventos desde Firebase -->
+                        <div id="eventos-container" class="row">
+                            <!-- Los eventos serán insertados dinámicamente aquí -->
+                        </div>
                     </div>
                 </div>
 
@@ -339,8 +346,5 @@
         <script src="js/jQuery.headroom.js"></script>
         <script src="js/slick.min.js"></script>
         <script src="js/custom.js"></script>
-        <script src="js/login.js"></script>
-
-
     </body>
 </html>
