@@ -61,7 +61,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Conecta</a>
+                                <a class="nav-link" href="conecta.html">Conecta</a>
                             </li>
 
                             <li class="nav-item">
@@ -198,86 +198,30 @@
 </div>
 
 
-            <section class="featured-product section-padding">
+            <section class="featured-product section-padding" id="eventos-section">
                 <div class="container">
                     <div class="row">
-                        
+                        <div id="anuncios-section-content">
+                            <div class="col-12 text-center">
+                                <h2 class="mb-5">Anuncios</h2>
+                            </div>
+                            <!-- Aquí se cargarán los anuncios desde Firebase -->
+                            <div id="anuncios-container" class="row">
+                                <!-- Los anuncios serán insertados dinámicamente aquí -->
+                            </div>
+                        </div>
                         <div class="col-12 text-center">
                             <h2 class="mb-5">Próximos Eventos</h2>
-                        </div>
-
-                        <div class="col-lg-4 col-12 mb-3">
-                            <div class="product-thumb">
-                                <a >
-                                    <img src="images/eventos/evento2.jpg" class="img-fluid product-image" alt="">
-                                </a>
-
-
-                                <div class="product-info d-flex">
-                                    <div>
-                                        <h5 class="product-title mb-0">
-                                            <a class="product-title-link">Servicio Especial</a>
-                                        </h5>
-
-                                        <p class="product-p">Septiembre 24, 25, 26, 28 y 29</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-12 mb-3">
-                            <div class="product-thumb">
-                                <a>
-                                    <img src="images/eventos/evento1.jpg" class="img-fluid product-image" alt="">
-                                </a>
-
-
-                                <div class="product-info d-flex">
-                                    <div>
-                                        <h5 class="product-title mb-0">
-                                            <a  class="product-title-link">Reunión Unida Jóvenes y Adolescentes</a>
-                                        </h5>
-
-                                        <p class="product-p">Septiembre 28, 16:00 Lugar: Laprida 143 (o)</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-12">
-                            <div class="product-thumb">
-                                <a >
-                                    <img src="images/eventos/LaSantaCena.jpg" class="img-fluid product-image" alt="">
-                                </a>
-
-                            
-
-                                <div class="product-info d-flex">
-                                    <div>
-                                        <h5 class="product-title mb-0">
-                                            <a  class="product-title-link">Santa Cena Octubre</a>
-                                        </h5>
-
-                                        <p class="product-p">02/10/2024   10:00</p>
-                                    </div>
-
-                                </div>
-                            </div>
                         </div>
                                     <!-- Aquí se cargarán los eventos desde Firebase -->
                         <div id="eventos-container" class="row">
                             <!-- Los eventos serán insertados dinámicamente aquí -->
                         </div>
+                        
                     </div>
                 </div>
-
-
             </section>
 
-
-            
         </main>
 
         <footer class="site-footer">
@@ -346,5 +290,7 @@
         <script src="js/jQuery.headroom.js"></script>
         <script src="js/slick.min.js"></script>
         <script src="js/custom.js"></script>
+
+
     </body>
 </html>

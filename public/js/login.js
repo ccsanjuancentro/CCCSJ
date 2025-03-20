@@ -28,7 +28,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
         // Redirige después de 2 segundos
         setTimeout(() => {
-            window.location.href = "index.html"; // Cambia por la página que desees
+            window.location.href = "seleccion.html"; // Cambia por la página que desees
         }, 2000);
     } else {
         // No hay sesión activa
@@ -45,7 +45,7 @@ function signInUser(email, password) {
             console.log('Usuario autenticado:', user.email);
             alert('Inicio de sesión correcto.');
             // Redirigir al usuario
-            window.location.href = "index.html"; // Cambia por la página que desees
+            window.location.href = "seleccion.html"; // Cambia por la página que desees
         })
         .catch((error) => {
             const errorCode = error.code;
