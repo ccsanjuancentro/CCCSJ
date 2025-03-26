@@ -158,7 +158,7 @@ async function cargarAnuncios() {
                 anuncioDiv.classList.add('col-lg-4', 'col-md-6', 'col-12', 'mb-3'); // Ajuste de columnas
 
                 anuncioDiv.innerHTML = `
-                    <div class="product-thumb">
+                    <div class="product-thumbanuncio">
                         <div class="product-info d-flex flex-column text-center">
                             <div>
                                 <h5 class="product-title mb-2">

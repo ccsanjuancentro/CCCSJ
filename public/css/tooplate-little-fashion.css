@@ -893,6 +893,11 @@ button:focus:not(:focus-visible) {
   height: 750px;
   transition: all 0.5s ease-out;
 }
+.product-thumbanuncio {
+  background: var(--white-color);
+  position: relative;
+  transition: all 0.5s ease-out;
+}
 .product-thumb img {
   width: 100%; /* La imagen ocupa todo el ancho del contenedor */
   height: 600px; /* Alto fijo para todas las imágenes (ajusta este valor según tus necesidades) */
