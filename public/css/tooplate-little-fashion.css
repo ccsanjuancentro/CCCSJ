@@ -483,6 +483,13 @@ strong {
   padding-top: 10rem;
   padding-bottom: 10rem;
 }
+/* Ajustes para móviles */
+@media (max-width: 767.98px) {
+  .site-header.section-padding-img {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
 
 .header-image {
   position: absolute;
@@ -881,10 +888,18 @@ button:focus:not(:focus-visible) {
 
 .product-thumb {
   background: var(--white-color);
+  overflow: hidden;
   position: relative;
+  height: 750px;
   transition: all 0.5s ease-out;
 }
-
+.product-thumb img {
+  width: 100%; /* La imagen ocupa todo el ancho del contenedor */
+  height: 600px; /* Alto fijo para todas las imágenes (ajusta este valor según tus necesidades) */
+  object-fit: cover; /* Ajusta la imagen sin distorsionarla */
+  display: block; /* Elimina el espacio adicional debajo de la imagen */
+  transition: all 0.5s ease-out; /* Transición para efectos hover */
+}
 .product-image {
   transition: all 0.5s ease-out;
 }

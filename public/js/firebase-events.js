@@ -1,7 +1,7 @@
 // Importa Firebase y Firestore de la versión modular
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
+let hayAlgo=false
 // Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyCv41Ccs_JqI7uGkfhFJV3D5MNyYXRwt5U",
@@ -68,38 +68,20 @@ function formatDate(date) {
 }
 
 async function cargarEventos() {
+    const eventosSectionContent = document.getElementById('eventos-section-content'); // Contenedor del título 
     const eventosContainer = document.getElementById('eventos-container');
     eventosContainer.innerHTML = '';
 
-    // Obtener la fecha del primer domingo
-    const fechaSantaCena = getNextFirstSunday();
-    const fechaFormateada = formatDate(fechaSantaCena);
-
     // Crear el evento "Santa Cena" con la fecha calculada
     const eventoDiv = document.createElement('div');
-    eventoDiv.classList.add('col-lg-4', 'col-12', 'mb-3');
-    eventoDiv.innerHTML = `
-        <div class="product-thumb">
-            <a>
-                <img src="images/eventos/LaSantaCena.jpg" class="img-fluid product-image" alt="">
-            </a>
-            <div class="product-info d-flex">
-                <div>
-                    <h5 class="product-title mb-0">
-                        <a class="product-title-link">Santa Cena</a>
-                    </h5>
-                    <p class="product-p">${fechaFormateada}</p>
-                    <p class="product-p">Lugar: Laprida 143 oeste</p>
-                </div>
-            </div>
-        </div>
-    `;
+    eventoDiv.innerHTML = ``;
 
     eventosContainer.appendChild(eventoDiv);
 
     try {
         const querySnapshot = await getDocs(collection(db, "eventos"));
         const ahora = new Date(); // Obtiene la fecha y hora actual
+        let hayEventos = false; 
 
         querySnapshot.forEach((doc) => {
             const evento = doc.data();
@@ -107,23 +89,30 @@ async function cargarEventos() {
 
             // Compara la fecha del evento con la fecha actual
             if (fechaEvento > ahora) {
-                const urlImagen = evento.imagen;
+                hayEventos = true;
+                hayAlgo=true;
+                let urlImagen = evento.imagen;
+                if (!urlImagen || urlImagen == ".jpg") {
+                    urlImagen = "https://imgur.com/sG0VnFl.jpg";
+                }
                 console.log("Valor de evento.imagen:", evento.imagen);
                 console.log("Tipo de dato de evento.imagen:", typeof evento.imagen);
                 const eventoDiv = document.createElement('div');
                 eventoDiv.classList.add('col-lg-4', 'col-12', 'mb-3');
+                let mostrarFecha = evento.mostrarFecha || false; // Si no existe, se asume false
+                let fechaHTML = mostrarFecha ? `<p class="product-p">${formatearFecha(evento.fecha)}</p>` : '';
 
                 eventoDiv.innerHTML = `
                     <div class="product-thumb">
                         <a>
-                            <img src="${urlImagen}" class="img-fluid product-image" alt="${evento.nombre}" onerror="this.src='images/placeholder.jpg';">
+                            <img src="${urlImagen}" class="img-fluid product-image " alt="${evento.nombre}" onerror="this.src='images/eventos/error_evento.jpg';">
                         </a>
                         <div class="product-info d-flex">
                             <div>
                                 <h5 class="product-title mb-0">
                                     <a class="product-title-link">${evento.nombre}</a>
                                 </h5>
-                                <p class="product-p">${formatearFecha(evento.fecha)}</p>
+                                ${fechaHTML}
                                 <p class="product-p">${evento.descripcion}</p>
                             </div>
                         </div>
@@ -133,6 +122,13 @@ async function cargarEventos() {
                 eventosContainer.appendChild(eventoDiv);
             }
         });
+
+        // Ocultar el contenedor de anuncios y el título si no hay anuncios
+        if (!hayEventos) {
+            eventosSectionContent.style.display = 'none'; // Oculta el contenedor y el título
+        } else {
+            eventosSectionContent.style.display = 'block'; // Muestra el contenedor y el título
+        }
     } catch (error) {
         console.error("Error al cargar eventos:", error);
     }
@@ -144,6 +140,7 @@ async function cargarAnuncios() {
     const anunciosSectionContent = document.getElementById('anuncios-section-content'); // Contenedor del título y anuncios
     const ahora = new Date(); 
     let hayAnuncios = false; 
+    
 
     try {
         const querySnapshot = await getDocs(collection(db, "anuncios"));
@@ -156,6 +153,7 @@ async function cargarAnuncios() {
             // Solo muestra el anuncio si la fecha aún no ha pasado
             if (fechaAnuncio > ahora) {
                 hayAnuncios = true; // Hay al menos un anuncio
+                hayAlgo=true;
                 const anuncioDiv = document.createElement('div');
                 anuncioDiv.classList.add('col-lg-4', 'col-md-6', 'col-12', 'mb-3'); // Ajuste de columnas
 
@@ -188,8 +186,15 @@ async function cargarAnuncios() {
 }
 // Función principal que carga tanto eventos como anuncios
 async function cargarContenido() {
-    await cargarEventos(); // Cargar eventos
-    await cargarAnuncios(); // Cargar anuncios
+    await cargarEventos(); 
+    await cargarAnuncios();
+    const eventosSection = document.getElementById('eventos-section');
+
+    if (!hayAlgo) {
+        eventosSection.style.display = 'none';  // Si no hay ninguno, ocultar toda la sección
+    } else {
+        eventosSection.style.display = 'block'; // Si hay al menos uno, mostrarla
+    }
 }
 
 // Asignar la función principal a window.onload

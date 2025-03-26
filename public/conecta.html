@@ -24,7 +24,8 @@
         <link rel="stylesheet" href="css/slick.css"/>
 
         <link href="css/tooplate-little-fashion.css" rel="stylesheet">
-        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     </head>
     
@@ -41,10 +42,6 @@
                     <a class="navbar-brand" href="index.html">
                         <img src="images/logos/logos2.svg" alt="Comunidad Cristiana" style="max-height: 40px;">
                     </a>
-                    <!--a class="navbar-brand" >
-                        <strong class="d-none d-lg-inline"><span>Comunidad Cristiana</span> San Juan</strong>
-                        <strong class="d-inline d-lg-none"><span>Comunidad Cristiana</span> SJ</strong>
-                    </a-->
 
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav mx-auto">
@@ -60,12 +57,12 @@
                                 <a class="nav-link " href="nosotros.html">Nosotros</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="https://drive.google.com/drive/folders/1HUXtNQrdk7KQNhCoMWs5TafC-BDPzcBn?usp=sharing"">Recursos</a>
+                                <a class="nav-link" href="https://drive.google.com/drive/folders/1HUXtNQrdk7KQNhCoMWs5TafC-BDPzcBn?usp=sharing" target="_blank">Recursos</a>
                             </li>
 
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contribuir</a>
+                                <a class="nav-link" href="contribuir.html">Contribuir</a>
                             </li>
 
                         </ul>
@@ -78,7 +75,6 @@
             <header class="site-header section-padding-img site-header-image">
                 <div class="container">
                     <div class="row">
-
                         <div class="col-lg-6 col-12 header-info">
                             <h1>
                                 <span class="d-block text-primary">CONECTÁ EN</span>
@@ -87,8 +83,21 @@
                         </div>
                     </div>
                 </div>
-
+            
                 <img src="images/header/conecta.jpg" class="header-image img-fluid" alt="">
+            
+                <!-- Estilos inline para corregir el tamaño en móviles -->
+                <style>
+                    /* Ajustes para móviles */
+                    @media (max-width: 767.98px) {
+                        .site-header {
+                            padding-top: 10px; /* Reducir el padding superior */
+                            padding-bottom: 10px; /* Reducir el padding inferior */
+                        }
+
+            
+                    }
+                </style>
             </header>
 
             <section class="about section-padding">
@@ -235,14 +244,17 @@
                                 <div class="tab-pane fade" id="pills-jovenes" role="tabpanel" aria-labelledby="pills-jovenes-tab">
                                     <div class="row">
                                         <div class="col-lg-7 col-12">
-                                            <img src="images/cody-lannom-G95AReIh_Ko-unsplash.jpeg" class="img-fluid" alt="">
+                                            <img src="images/ministerios/jovenes.jpg" class="img-fluid" alt="">
                                         </div>
                                 
                                         <div class="col-lg-5 col-12">
                                             <div class="d-flex flex-column h-100 ms-lg-4 mt-lg-0 mt-5">
                                                 <h4 class="mb-3">Jóvenes</h4>
-                                                <p>Descripción de la actividad correspondiente a Jóvenes.</p>
-                                            </div>
+                                                <p>¿Tenés entre 18 y 33 años? <strong>¡Esto es para vos!</strong> Nos juntamos todos los sábados a las 20:30 hs en la iglesia para pasar un buen rato juntos. Acá no importa de dónde vengas, cómo te vistas o qué pienses: <strong>todos tienen un lugar</strong>.</p>
+
+                                                   <p>En cada reunión hay un tiempo de alabanza, un espacio de meditación donde hablamos de temas que nos despiertan interés y nos ayudan a crecer; y, por supuesto, un momento para compartir y reírnos. <strong>¡Traé a tus amigos y vení a ser parte de esta comunidad!</strong></p>
+                                                   <p><a href="https://www.instagram.com/jovenescc_sj/" target="_blank">Saber más...</a></p>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -295,47 +307,22 @@
                                 <div class="tab-pane fade" id="pills-mat-jovenes" role="tabpanel" aria-labelledby="pills-mat-jovenes-tab">
                                     <div class="row">
                                         <div class="col-lg-7 col-12">
-                                            <img src="images/cody-lannom-G95AReIh_Ko-unsplash.jpeg" class="img-fluid" alt="">
+                                            <img src="images/ministerios/matrimonio.jpg" class="img-fluid" alt="">
                                         </div>
                                 
                                         <div class="col-lg-5 col-12">
                                             <div class="d-flex flex-column h-100 ms-lg-4 mt-lg-0 mt-5">
                                                 <h4 class="mb-3">Matrimonios Jóvenes</h4>
-                                                <p>Descripción de la actividad correspondiente a Matrimonios Jóvenes.</p>
+                                                <p>  <em>"Más valen dos que uno, porque obtienen más fruto de su esfuerzo. Si caen, el uno levanta al otro." – Eclesiastés 4:9-10 </em></p>
+                                                <p> Una vez al mes, los <strong> miércoles a las 20:30 hs</strong>, nos reunimos en el Parque de Mayo, cerca de la cafetería Corner, para compartir un tiempo especial como matrimonios jóvenes. </p>
+                                                <p>En cada encuentro, hablamos sobre temas de la vida cotidiana en familia, con un enfoque especial en fortalecer la relación con tu cónyuge. Todo lo abordamos desde una perspectiva cristiana, basada en los mandatos bíblicos, para construir hogares sólidos y llenos de amor.</p>
+                                                <p> <strong>¡Sumate, Traé tu mate y algo rico para merendar!</strong></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div class="tab-pane fade" id="pills-mat-mayores" role="tabpanel" aria-labelledby="pills-mat-mayores-tab">
-                                    <div class="row">
-                                        <div class="col-lg-7 col-12">
-                                            <img src="images/cody-lannom-G95AReIh_Ko-unsplash.jpeg" class="img-fluid" alt="">
-                                        </div>
-                                
-                                        <div class="col-lg-5 col-12">
-                                            <div class="d-flex flex-column h-100 ms-lg-4 mt-lg-0 mt-5">
-                                                <h4 class="mb-3">Matrimonios mayores</h4>
-                                                <p>Descripción de la actividad correspondiente a Matrimonios mayores.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="tab-pane fade" id="pills-ropero" role="tabpanel" aria-labelledby="pills-ropero-tab">
-                                    <div class="row">
-                                        <div class="col-lg-7 col-12">
-                                            <img src="images/cody-lannom-G95AReIh_Ko-unsplash.jpeg" class="img-fluid" alt="">
-                                        </div>
-                                
-                                        <div class="col-lg-5 col-12">
-                                            <div class="d-flex flex-column h-100 ms-lg-4 mt-lg-0 mt-5">
-                                                <h4 class="mb-3">Ropero</h4>
-                                                <p>Descripción de la actividad correspondiente a Ropero.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            
                                 
 
 
@@ -349,16 +336,11 @@
                 
 
             </section>
-            <div class="d-flex justify-content-center align-items-center" >
+            <div class="d-flex justify-content-center align-items-center mb-6" >
                 <a href="#" class="btn custom-btn social-btn" data-bs-toggle="modal" data-bs-target="#prayerRequestModal" style="max-width: 250px; width: 100%; text-align: center;">
                     <i class="bi"></i>
                     <h3 class="text-center">¡Quiero Conectar!</h3>
                 </a>
-                <br><br>
-                <div>
-                    <br>
-                    <br>
-                </div>
             </div>
             
 
@@ -388,12 +370,6 @@
                                         <option value="Matrimonios Jóvenes">Matrimonios Jóvenes</option>
                                     </select>
                                 </div>
-                                <div class="text-center mt-4">
-                                    <p id="confirmationMessage" style="display: none;">Nos alegra un montón tu participación, te contactaremos en breve.</p>
-                                    <button type="submit" class="btn custom-btn mt-3">
-                                        Confirmar
-                                    </button>
-                                </div>
                             </form>
                         </div>
                     </div>
@@ -407,20 +383,19 @@
                             <h2 class="mb-5">MINISTRA EN <span>COMUNIDAD</span></h2>
                         </div>
 
-                        <div class="col-lg-4 mb-4 col-12">
+                        <!--div class="col-lg-4 mb-4 col-12">
                             <div class="team-thumb d-flex align-items-center">
                                 <img src="images/ministerios/hora.jpg" class="img-fluid custom-circle-image team-image me-4" alt="">
 
                                 <div class="team-info">
                                     <h5 class="mb-0">Hora Feliz</h5>
-                                    <!-- Button trigger modal -->
                                     <button type="button" class="btn custom-modal-btn" data-bs-toggle="modal" data-bs-target="#don">
                                       <i class="bi-plus-circle-fill"></i>
                                     </button>
 
                                 </div>
                             </div>
-                        </div>
+                        </div-->
 
                         <div class="col-lg-4 mb-4 col-12">
                             <div class="team-thumb d-flex align-items-center">
@@ -458,38 +433,36 @@
                                 <div class="team-info">
                                     <h5 class="mb-0">Librería</h5>
                                     <!-- Button trigger modal -->
-                                    <button type="button" class="btn custom-modal-btn" data-bs-toggle="modal" data-bs-target="#marie">
+                                    <button type="button" class="btn custom-modal-btn" data-bs-toggle="modal" data-bs-target="#libreria">
                                       <i class="bi-plus-circle-fill"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 mb-lg-0 mb-4 col-12">
+                        <!--div class="col-lg-4 mb-lg-0 mb-4 col-12">
                             <div class="team-thumb d-flex align-items-center">
                                 <img src="images/ministerios/carcelario.jpg" class="img-fluid custom-circle-image team-image me-4" alt="">
 
                                 <div class="team-info">
                                     <h5 class="mb-0">Ministerio Carcelario</h5>
-                                    <!-- Button trigger modal -->
                                     <button type="button" class="btn custom-modal-btn" data-bs-toggle="modal" data-bs-target="#marie">
                                       <i class="bi-plus-circle-fill"></i>
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4 mb-lg-0 mb-4 col-12">
+                        </div-->
+                        <!--div class="col-lg-4 mb-lg-0 mb-4 col-12">
                             <div class="team-thumb d-flex align-items-center">
                                 <img src="images/ministerios/ujier.png" class="img-fluid custom-circle-image team-image me-4" alt="">
 
                                 <div class="team-info">
                                     <h5 class="mb-0">Ujieres</h5>
-                                    <!-- Button trigger modal -->
                                     <button type="button" class="btn custom-modal-btn" data-bs-toggle="modal" data-bs-target="#marie">
                                       <i class="bi-plus-circle-fill"></i>
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </div-->
 
                     </div>
                 </div>
@@ -566,6 +539,36 @@
                             </div>
                         </div>
         
+                    </div>
+                </div>
+                <div class="modal fade" id="libreria" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content border-0">
+                            <div class="modal-header flex-column">
+                                <h3 class="modal-title" id="exampleModalLabel">Ministerio Librería</h3>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                
+                            <div class="modal-body">
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <p>El Ministerio Librería nació en el año 2006 como una iniciativa para fomentar la lectura y proveer recursos literarios  a la congregación. Desde sus inicios, ha sido un espacio dedicado a la venta de Biblias, literatura cristiana, material infantil, anotadores, entre otros artículos. Además, el ministerio cuenta con una Biblioteca que ha servido como un valioso recurso para quienes buscan crecimiento espiritual y conocimiento.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <p>A lo largo de los años, el Ministerio Librería ha enfrentado desafíos; Sin embargo, seguimos comprometidos con nuestra misión de ofrecer literatura de calidad.</p>
+                                    </div>
+                                </div>
+                
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <p>Invitamos a la congregación y a la comunidad a apoyar y visitar el Ministerio Librería, ya sea para adquirir libros, donar material o simplemente disfrutar de la Biblioteca. Cada aporte y visita es fundamental para mantener viva esta iniciativa que ha bendecido a tantas personas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
         
@@ -693,17 +696,28 @@
         
                 emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
                     .then(function(response) {
-                        // Alerta de éxito
-                        alert('Mensaje enviado exitosamente.');
-                        // Cierra el modal
-                        var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
-                        modal.hide();
-                        // Limpia el formulario
-                        document.getElementById('churchSelectionForm').reset();
-                    }, function(error) {
-                        // Alerta de error
-                        alert('Ocurrió un error. Intenta nuevamente.');
-                    });
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Mensaje enviado exitosamente.',
+                    text: 'En breve nos contactaremos contigo, ¡Bendiciones!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Cierra el modal
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
+                    modal.hide();
+                    // Limpia el formulario
+                    document.getElementById('prayerRequestForm').reset();
+                });
+            }, function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error. Intenta nuevamente.'
+                });
+            });
+
+
+
             });
         </script>
     </body>

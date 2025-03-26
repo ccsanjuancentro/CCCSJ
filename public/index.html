@@ -22,10 +22,10 @@
         <link rel="stylesheet" href="css/slick.css"/>
 
         <link href="css/tooplate-little-fashion.css" rel="stylesheet">
-        <!-- Cargar Firebase desde un CDN -->
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
         <script type="module" src="js/firebase-events.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </head>
     
@@ -49,10 +49,6 @@
                     <a class="navbar-brand" href="#">
                         <img src="images/logos/logos2.svg" alt="Comunidad Cristiana" style="max-height: 40px;">
                     </a>
-                    <!--a class="navbar-brand" >
-                        <strong class="d-none d-lg-inline"><span>Comunidad Cristiana</span> San Juan</strong>
-                        <strong class="d-inline d-lg-none"><span>Comunidad Cristiana</span> SJ</strong>
-                    </a-->
 
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav mx-auto">
@@ -69,11 +65,11 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="https://drive.google.com/drive/folders/1HUXtNQrdk7KQNhCoMWs5TafC-BDPzcBn?usp=sharing"">Recursos</a>
+                                <a class="nav-link" href="https://drive.google.com/drive/folders/1HUXtNQrdk7KQNhCoMWs5TafC-BDPzcBn?usp=sharing" target="_blank">Recursos</a>
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Contribuir</a>
+                                <a class="nav-link" href="contribuir.html">Contribuir</a>
                             </li>
 
                         </ul>
@@ -95,7 +91,7 @@
                     <div class="slick-bottom" >
                         <div class="container">
                             <div class="row">
-                                <div class="col-lg-8 col-10" >
+                                <div class="col-lg-8 col-10 d-none d-lg-block">
                                     <h1 class="slick-title">Comunidad Cristiana</h1>
                                     <h2 class="slick-title">San Juan - Centro</h2>
 
@@ -168,7 +164,7 @@
                     </div>
                 </div>
             </section>
-            
+
 
 <!-- Modal -->
 <div class="modal fade" id="prayerRequestModal" tabindex="-1" aria-labelledby="prayerRequestModalLabel" aria-hidden="true">
@@ -185,7 +181,7 @@
                         <input type="tel" class="form-control" id="phone" name="phone" required>
                     </div>
                     <div class="mb-3">
-                        <label for="prayerRequest" class="form-label">Contános, ¿Por qué querés que oremos?</label>
+                        <label for="prayerRequest" class="form-label">Contanos, ¿Por qué querés que oremos?</label>
                         <textarea class="form-control" id="prayerRequest" name="prayerRequest" rows="3" required></textarea>
                     </div>
                     <button type="submit" class="btn custom-btn form-control mt-4 mb-3">
@@ -210,18 +206,25 @@
                                 <!-- Los anuncios serán insertados dinámicamente aquí -->
                             </div>
                         </div>
-                        <div class="col-12 text-center">
-                            <h2 class="mb-5">Próximos Eventos</h2>
+                        <div id="eventos-section-content">
+                            <div class="col-12 text-center">
+                                <h2 class="mb-5">Próximos Eventos</h2>
+                            </div>
+                                        <!-- Aquí se cargarán los eventos desde Firebase -->
+                            <div id="eventos-container" class="row">
+                                <!-- Los eventos serán insertados dinámicamente aquí -->
+                            </div>
                         </div>
-                                    <!-- Aquí se cargarán los eventos desde Firebase -->
-                        <div id="eventos-container" class="row">
-                            <!-- Los eventos serán insertados dinámicamente aquí -->
-                        </div>
+                        
                         
                     </div>
                 </div>
             </section>
+            <section >
 
+                <script src="https://static.elfsight.com/platform/platform.js" async></script>
+                <div class="elfsight-app-c91c80cf-8d6c-48ed-9b7f-e3e889141c21" data-elfsight-app-lazy></div>
+                </section>
         </main>
 
         <footer class="site-footer">
@@ -267,18 +270,26 @@
                 event.preventDefault(); // Previene el envío del formulario de la manera predeterminada
         
                 emailjs.sendForm('service_v7qrfav', 'template_yqe5xq8', this)
-                    .then(function(response) {
-                        // Alerta de éxito
-                        alert('Petición enviada exitosamente.');
-                        // Cierra el modal
-                        var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
-                        modal.hide();
-                        // Limpia el formulario
-                        document.getElementById('prayerRequestForm').reset();
-                    }, function(error) {
-                        // Alerta de error
-                        alert('Ocurrió un error. Intenta nuevamente.');
-                    });
+                .then(function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Petición enviada',
+                    text: 'Oraremos por ti. ¡Bendiciones!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Cierra el modal
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
+                    modal.hide();
+                    // Limpia el formulario
+                    document.getElementById('prayerRequestForm').reset();
+                });
+            }, function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Ocurrió un error. Intenta nuevamente.'
+                });
+            });
             });
         </script>
         

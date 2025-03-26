@@ -28,6 +28,7 @@
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </head>
     <body>
@@ -51,20 +52,20 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Conecta</a>
+                                <a class="nav-link" href="conecta.html">Conecta</a>
                             </li>
 
                             <li class="nav-item">
                                 <a class="nav-link" href="nosotros.html">Nosotros</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="https://drive.google.com/drive/folders/1HUXtNQrdk7KQNhCoMWs5TafC-BDPzcBn?usp=sharing"">Recursos</a>
+                                <a class="nav-link" href="https://drive.google.com/drive/folders/1HUXtNQrdk7KQNhCoMWs5TafC-BDPzcBn?usp=sharing" target="_blank">Recursos</a>
                             </li>
 
 
-                            <li class="nav-item">
+                            <!--li class="nav-item">
                                 <a class="nav-link" href="#">Contribuir</a>
-                            </li>
+                            </li--S>
 
                         </ul>
 
@@ -96,10 +97,14 @@
                                 <div class="mb-3">
                                     <label for="fecha" class="form-label">Fecha y Hora</label>
                                     <input type="datetime-local" class="form-control" id="fecha" name="fecha" required>
+                                    <div class="form-check mt-2">
+                                        <input type="checkbox" class="form-check-input" id="noMostrarFecha" name="noMostrarFecha">
+                                        <label class="form-check-label" for="noMostrarFecha">No mostrar la fecha</label>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="imagen" class="form-label">URL de la Imagen</label>
-                                    <input type="url" class="form-control" id="imagen" name="imagen" required>
+                                    <input type="url" class="form-control" id="imagen" name="imagen">
                                 </div>
                                 <button type="submit" class="btn custom-btn">Agregar Evento</button>
                             </form>

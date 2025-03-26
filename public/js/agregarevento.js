@@ -1,7 +1,7 @@
 // Importa Firebase y Firestore de la versión modular
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -26,28 +26,44 @@ const eventoForm = document.getElementById('eventoForm');
 eventoForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Obtiene los valores del formulario
     const nombre = eventoForm.nombre.value;
     const descripcion = eventoForm.descripcion.value;
     const fecha = new Date(eventoForm.fecha.value);
-    const imagen = eventoForm.imagen.value;
-
+    const imagen = eventoForm.imagen.value+'.jpg';
+    const noMostrarFecha = eventoForm.noMostrarFecha.checked; 
     const user = auth.currentUser;
 
     try {
-        // Añade el documento a la colección "eventos"
         await addDoc(collection(db, "eventos"), {
             nombre: nombre,
             descripcion: descripcion,
             fecha: Timestamp.fromDate(fecha),
+            mostrarFecha: !noMostrarFecha,
             imagen: imagen,
-            uid: user.uid // opcional: guardar quién creó el evento
+            uid: user?.uid || null
         });
 
-        alert('Evento agregado correctamente');
-        eventoForm.reset(); // Limpia el formulario
+        Swal.fire({
+            title: '¡Evento agregado!',
+            text: '¿Quieres agregar otro evento?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eventoForm.reset();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
     } catch (error) {
         console.error("Error al agregar el evento:", error);
-        alert('Hubo un error al agregar el evento');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al agregar el evento. Por favor, intenta nuevamente.'
+        });
     }
 });

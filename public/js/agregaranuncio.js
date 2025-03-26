@@ -1,7 +1,7 @@
 // Importa Firebase y Firestore de la versión modular
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getFirestore, collection, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -26,7 +26,6 @@ const anuncioForm = document.getElementById('anuncioForm');
 anuncioForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Obtiene los valores del formulario
     const titulo = anuncioForm.titulo.value;
     const descripcion = anuncioForm.descripcion.value;
     const fecha = new Date(anuncioForm.fecha.value);
@@ -34,18 +33,34 @@ anuncioForm.addEventListener('submit', async (e) => {
     const user = auth.currentUser;
 
     try {
-        // Añade el documento a la colección "anuncios"
         await addDoc(collection(db, "anuncios"), {
             titulo: titulo,
             descripcion: descripcion,
             fecha: Timestamp.fromDate(fecha),
-            uid: user.uid // opcional: guardar quién creó el evento
+            uid: user?.uid || null
         });
 
-        alert('Anuncio agregado correctamente');
-        anuncioForm.reset(); // Limpia el formulario
+        Swal.fire({
+            title: '¡Anuncio agregado!',
+            text: '¿Quieres agregar otro anuncio?',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'No',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                anuncioForm.reset();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
     } catch (error) {
         console.error("Error al agregar el anuncio:", error);
-        alert('Hubo un error al agregar el anuncio');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al agregar el anuncio. Por favor, intenta nuevamente.'
+        });
     }
 });
