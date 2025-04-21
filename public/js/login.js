@@ -1,13 +1,14 @@
 // Configuración de Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCv41Ccs_JqI7uGkfhFJV3D5MNyYXRwt5U",
-  authDomain: "ccsanjuan-8c6ac.firebaseapp.com",
-  projectId: "ccsanjuan-8c6ac",
-  storageBucket: "ccsanjuan-8c6ac.firebasestorage.app",
-  messagingSenderId: "449978680914",
-  appId: "1:449978680914:web:310688cae51766341ac18b",
-  measurementId: "G-T8BW6Y171T"
-};
+    apiKey: "AIzaSyCpL5fjAy05rV2OMWFWwRwy4ttElmhtqBg",
+    authDomain: "iglesiaccsj143.firebaseapp.com",
+    projectId: "iglesiaccsj143",
+    storageBucket: "iglesiaccsj143.firebasestorage.app",
+    messagingSenderId: "141392861764",
+    appId: "1:141392861764:web:2d91da3c7b985f0d15ba11",
+    measurementId: "G-4N1DQTQK11"
+  };
+  
 
 // Inicializar Firebase
 if (!firebase.apps.length) {

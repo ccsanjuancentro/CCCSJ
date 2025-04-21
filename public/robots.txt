@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /privado.html
-Sitemap: https://ccsj.web.app/sitemap.xml
