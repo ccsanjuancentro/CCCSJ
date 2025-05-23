@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /privado.html
+Sitemap: https://iglesiaccsj.web.app/sitemap.xml

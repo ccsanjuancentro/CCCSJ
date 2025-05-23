@@ -890,7 +890,7 @@ button:focus:not(:focus-visible) {
   background: var(--white-color);
   overflow: hidden;
   position: relative;
-  height: 750px;
+  height: auto;
   transition: all 0.5s ease-out;
 }
 .product-thumbanuncio {
@@ -899,11 +899,11 @@ button:focus:not(:focus-visible) {
   transition: all 0.5s ease-out;
 }
 .product-thumb img {
-  width: 100%; /* La imagen ocupa todo el ancho del contenedor */
-  height: 600px; /* Alto fijo para todas las imágenes (ajusta este valor según tus necesidades) */
-  object-fit: cover; /* Ajusta la imagen sin distorsionarla */
-  display: block; /* Elimina el espacio adicional debajo de la imagen */
-  transition: all 0.5s ease-out; /* Transición para efectos hover */
+  width: 100%;
+  height: auto; /* La altura se ajusta proporcionalmente al ancho */
+  object-fit: cover; /* La imagen cubre el contenedor, recortando si es necesario */
+  display: block;
+  transition: all 0.5s ease-out;
 }
 .product-image {
   transition: all 0.5s ease-out;
@@ -918,7 +918,7 @@ button:focus:not(:focus-visible) {
   top: 0;
   right: 0;
   left: 0;
-  margin: 20px;
+  margin: 10px;
 }
 
 .product-info {
