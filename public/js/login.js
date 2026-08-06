@@ -15,57 +15,72 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// Observador de autenticación
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // El usuario ya tiene una sesión activa
-        console.log("Usuario autenticado:", user.email);
-
-        // Muestra el mensaje
-        const sessionMessage = document.getElementById('sessionMessage');
-        if (sessionMessage) {
-            sessionMessage.style.display = 'block';
-        }
-
-        // Redirige después de 2 segundos
-        setTimeout(() => {
-            window.location.href = "seleccion.html"; // Cambia por la página que desees
-        }, 2000);
-    } else {
-        // No hay sesión activa
-        console.log("No hay sesión activa.");
+// Check if admin session already exists
+if (localStorage.getItem('isAdminLoggedIn') === 'true') {
+    const sessionMessage = document.getElementById('sessionMessage');
+    if (sessionMessage) {
+        sessionMessage.style.display = 'block';
+        sessionMessage.innerText = 'Sesión activa como Administrador (cccsj). Redirigiendo...';
     }
-});
-
-// Función de inicio de sesión con Firebase
-function signInUser(email, password) {
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            // Inicio de sesión exitoso
-            const user = userCredential.user;
-            console.log('Usuario autenticado:', user.email);
-            alert('Inicio de sesión correcto.');
-            // Redirigir al usuario
-            window.location.href = "seleccion.html"; // Cambia por la página que desees
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log('Error:', errorCode, errorMessage);
-            alert('Error al iniciar sesión: ' + errorMessage); // Muestra el mensaje de error
-        });
+    setTimeout(() => {
+        window.location.href = "index.html#anuncios-section";
+    }, 1200);
 }
 
-// Modifica el evento submit del formulario para usar Firebase
+// Observador de autenticación Firebase
+if (typeof firebase !== 'undefined' && firebase.auth) {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            console.log("Usuario autenticado Firebase:", user.email);
+            const sessionMessage = document.getElementById('sessionMessage');
+            if (sessionMessage) {
+                sessionMessage.style.display = 'block';
+            }
+            setTimeout(() => {
+                window.location.href = "index.html#anuncios-section";
+            }, 1500);
+        }
+    });
+}
+
+// Función de inicio de sesión
+function signInUser(username, password) {
+    const cleanUser = username.trim().toLowerCase();
+    const cleanPass = password.trim();
+
+    // Verificación de administrador cccsj / fnlo43
+    if (cleanUser === 'cccsj' && cleanPass === 'fnlo43') {
+        localStorage.setItem('isAdminLoggedIn', 'true');
+        localStorage.setItem('adminUser', 'cccsj');
+        alert('¡Inicio de sesión correcto como Administrador cccsj!');
+        window.location.href = "index.html#anuncios-section";
+        return;
+    }
+
+    // Si no es el admin local, intentar Firebase si está configurado
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        firebase.auth().signInWithEmailAndPassword(username, password)
+            .then((userCredential) => {
+                localStorage.setItem('isAdminLoggedIn', 'true');
+                localStorage.setItem('adminUser', userCredential.user.email);
+                alert('Inicio de sesión correcto.');
+                window.location.href = "index.html#anuncios-section";
+            })
+            .catch((error) => {
+                alert('Usuario o contraseña incorrectos. (Para acceso directo usá el usuario: cccsj y la contraseña asignada)');
+            });
+    } else {
+        alert('Usuario o contraseña incorrectos. (Usá usuario: cccsj y contraseña: fnlo43)');
+    }
+}
+
+// Evento submit del formulario
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Evita que el formulario se envíe y la página se recargue
-
+        event.preventDefault();
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
-
-        // Llama a la función de inicio de sesión con Firebase
         signInUser(email, password);
     });
 }

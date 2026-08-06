@@ -31,6 +31,7 @@
         <link rel="stylesheet" href="css/slick.css"/>
 
         <link href="css/tooplate-little-fashion.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
         <script type="module" src="js/firebase-events.js"></script>
@@ -98,30 +99,10 @@
             </nav>
 
             <style>
-                .hero-section-compact {
-                    position: relative;
-                    height: 380px;
-                    background: url('images/slideshow/sanjuan3.jpg') no-repeat center center;
-                    background-size: cover;
-                }
-                .hero-overlay-compact {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.25));
-                    display: flex;
-                    align-items: center;
-                }
-                @media (max-width: 768px) {
-                    .hero-section-compact {
-                        height: 240px;
-                        background-image: url('images/slideshow/sanjuan4.jpg');
-                    }
-                }
+
                 .welcome-section-modern {
-                    padding-top: 50px;
+                    margin-top: 86px;
+                    padding-top: 60px;
                     padding-bottom: 40px;
                 }
                 .welcome-text-highlight {
@@ -150,25 +131,47 @@
                     transform: translateY(-5px);
                     box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
                 }
-                @media (min-width: 768px) {
-                    .action-card .card-top {
-                        min-height: 130px;
-                    }
+                .calendar-scroll-container {
+                    display: flex;
+                    flex-wrap: nowrap;
+                    overflow-x: auto;
+                    -webkit-overflow-scrolling: touch;
+                    scroll-snap-type: x mandatory;
+                    scrollbar-width: thin;
+                    padding-bottom: 12px;
+                }
+                .calendar-scroll-container::-webkit-scrollbar {
+                    height: 5px;
+                }
+                .calendar-scroll-container::-webkit-scrollbar-thumb {
+                    background-color: #cbd5e1;
+                    border-radius: 4px;
+                }
+                .calendar-day-col {
+                    flex: 1 0 140px;
+                    min-width: 135px;
+                    scroll-snap-align: start;
+                }
+                .calendar-active-card {
+                    background-color: #f0f7ff;
+                    border: 1px solid #cfe2ff !important;
+                    border-top: 4px solid #0d6efd !important;
+                    transition: transform 0.2s ease, box-shadow 0.2s ease;
+                    min-height: 220px;
+                }
+                .calendar-active-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 10px 25px rgba(13, 110, 253, 0.15) !important;
+                }
+                .calendar-empty-card {
+                    background: transparent;
+                    border: 1px dashed rgba(0, 0, 0, 0.12);
+                    min-height: 220px;
+                    opacity: 0.5;
                 }
             </style>
 
-            <section class="hero-section-compact">
-                <div class="hero-overlay-compact">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-12 text-center text-md-start">
-                                <h1 class="text-white font-weight-bold mb-0" style="font-size: clamp(32px, 5vw, 54px); text-shadow: 0 2px 8px rgba(0,0,0,0.5);">Comunidad Cristiana</h1>
-                                <h2 class="text-white-50 font-weight-bold mt-2" style="font-size: clamp(20px, 3vw, 32px); text-shadow: 0 2px 8px rgba(0,0,0,0.5);">San Juan - Centro</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+
 
             <section class="welcome-section-modern bg-light py-5">
                 <div class="container">
@@ -204,17 +207,17 @@
                         <!-- Columna 1: Sermones -->
                         <div class="col-lg-5 col-md-6 d-flex">
                             <div class="action-card card-hover-effect w-100 h-100 d-flex flex-column justify-content-between p-4 p-lg-5 rounded-4 shadow-sm border bg-white">
-                                <div class="card-top">
+                                <div class="card-top" style="min-height: 125px;">
                                     <h3 class="mb-3 font-weight-bold text-danger" style="font-size: 28px;">¿Faltaste a un servicio?</h3>
                                     <p class="mb-0 text-muted" style="font-size: 16px;">No te preocupes, nosotros grabamos los sermones para que puedas edificarte en cualquier momento.</p>
                                 </div>
                                 
-                                <div class="latest-sermon-preview my-4" id="latestSermonThumbContainer" style="display: none;">
-                                    <a id="latestSermonCard" href="https://www.youtube.com/@comunidadcristianasanjuan3662" target="_blank" class="d-block position-relative overflow-hidden rounded-3 shadow-sm">
-                                        <img id="latestSermonThumb" src="" alt="Último sermón" class="img-fluid w-100">
+                                <div class="latest-sermon-preview my-4 position-relative overflow-hidden rounded-3 shadow-sm" id="latestSermonThumbContainer" style="cursor: pointer;">
+                                    <a id="latestSermonCard" href="https://www.youtube.com/@comunidadcristianasanjuan3662" target="_blank" class="d-block position-relative">
+                                        <img id="latestSermonThumb" src="images/slideshow/sanjuan3.jpg" alt="Último sermón" class="img-fluid w-100" style="transition: transform 0.3s ease; aspect-ratio: 16/9; object-fit: cover;">
                                         <div class="play-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
-                                            <div class="play-btn-circle d-flex align-items-center justify-content-center rounded-circle bg-white text-danger">
-                                                <i class="bi bi-play-fill fs-2"></i>
+                                            <div class="play-btn-circle d-flex align-items-center justify-content-center rounded-circle bg-white text-danger" style="width: 50px; height: 50px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                                                <i class="bi bi-play-fill fs-2 ms-1"></i>
                                             </div>
                                         </div>
                                         <div class="sermon-badge position-absolute top-0 start-0 m-3 px-3 py-1 bg-danger text-white rounded-pill text-uppercase font-weight-bold" style="font-size: 10px; letter-spacing: 0.5px;">
@@ -234,7 +237,7 @@
                         <!-- Columna 2: Oración -->
                         <div class="col-lg-5 col-md-6 d-flex">
                             <div class="action-card card-hover-effect w-100 h-100 d-flex flex-column justify-content-between p-4 p-lg-5 rounded-4 shadow-sm border bg-white">
-                                <div class="card-top">
+                                <div class="card-top" style="min-height: 125px;">
                                     <h3 class="mb-3 font-weight-bold text-primary" style="font-size: 28px;">¿Necesitás oración?</h3>
                                     <p class="mb-0 text-muted" style="font-size: 16px;">Creemos en el poder de la oración y queremos estar con vos. Contanos tu necesidad para que podamos interceder.</p>
                                 </div>
@@ -264,21 +267,101 @@
                 </div>
             </section>
 
-            <!-- Actividades de la Semana -->
-            <section class="py-5 bg-white border-top">
+            <!-- Seccion Novedades (Justo antes de Proximos Encuentros) -->
+            <section class="py-5 bg-light border-top border-bottom" id="anuncios-section" style="display: none;">
                 <div class="container">
-                    <div class="text-center mb-5">
-                        <h2 class="font-weight-bold text-dark" style="font-size: 32px;">Próximas Actividades</h2>
-                        <p class="text-muted mb-0" id="calendarRangeText" style="font-size: 16px; font-weight: 500;">Cronograma para los próximos 7 días</p>
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+                        <div class="text-center text-md-start" id="anunciosTitleBadge">
+                            <span class="badge bg-danger text-white rounded-3 px-4 py-2 font-weight-bold text-uppercase shadow-sm d-inline-block" style="font-size: 20px; letter-spacing: 1.5px;">Novedades</span>
+                        </div>
+                        <!-- Controles de Administrador -->
+                        <div id="adminAnunciosBar" class="d-flex align-items-center gap-2 my-2" style="display: none !important;">
+                            <button class="btn text-white btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" style="background-color: #fd7e14; border-color: #fd7e14;" data-bs-toggle="modal" data-bs-target="#nuevoAnuncioModal">
+                                <i class="bi bi-plus-lg me-1"></i> Publicar Novedad
+                            </button>
+                        </div>
                     </div>
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center" id="activitiesCalendarContainer">
-                        <!-- Generado dinámicamente por JS -->
+
+                    <div id="anuncios-container" class="horizontal-scroll-container">
+                        <!-- Novedades cargadas dinámicamente -->
                     </div>
                 </div>
             </section>
 
+            <!-- Próximos Encuentros -->
+            <section class="py-5 my-3 bg-white border-top">
+                <div class="container">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+                        <div class="text-center text-md-start">
+                            <h2 class="font-weight-bold text-dark mb-0" style="font-size: 32px;">Próximos Encuentros</h2>
+                        </div>
+                        <!-- Controles de Administrador para Encuentros -->
+                        <div id="adminEncuentrosBar" class="d-flex align-items-center gap-2 my-2" style="display: none !important;">
+                            <button class="btn btn-success btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#nuevoEncuentroModal">
+                                <i class="bi bi-plus-lg me-1"></i> Nuevo Encuentro
+                            </button>
+                        </div>
+                    </div>
 
-<!-- Modal -->
+                    <div class="calendar-scroll-container gap-2 gap-md-3" id="activitiesCalendarContainer">
+                        <!-- Generado dinámicamente por JS -->
+                    </div>
+
+                    <!-- Eventos Futuros Programados (Vista Administrador en Gris) -->
+                    <div id="futureEventsSection" class="mt-5 pt-4 border-top" style="display: none;">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h5 class="font-weight-bold text-muted mb-0" style="font-size: 18px;">
+                                <i class="bi bi-calendar3 me-2"></i> Eventos Programados Futuros (No visibles públicamente aún)
+                            </h5>
+                        </div>
+                        <p class="text-muted small mb-4">Estos eventos están agendados para fechas más adelante. Aparecerán automáticamente en el calendario de la semana cuando corresponda.</p>
+                        <div id="futureEventsContainer" class="row">
+                            <!-- Cargados en gris por encuentros.js -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seccion Destacados (Banners) -->
+            <section class="py-5 my-3 bg-light border-top border-bottom" id="destacados-section" style="display: none;">
+                <div class="container">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+                        <div class="text-center text-md-start" id="destacadosTitleBadge">
+                            <span class="badge bg-primary text-white rounded-3 px-4 py-2 font-weight-bold text-uppercase shadow-sm d-inline-block" style="font-size: 20px; letter-spacing: 1.5px;">Destacados</span>
+                        </div>
+                        <div id="adminDestacadosBar" class="d-flex align-items-center gap-2 my-2" style="display: none !important;">
+                            <button class="btn btn-primary btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#nuevoDestacadoModal">
+                                <i class="bi bi-plus-lg me-1"></i> Subir Banner
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="destacados-container" class="horizontal-scroll-container">
+                        <!-- Destacados cargados dinámicamente -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seccion CTA Conecta -->
+            <section class="py-5 text-white text-center position-relative overflow-hidden shadow-sm" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);">
+                <div class="container py-3 position-relative" style="z-index: 2;">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-9 col-12">
+                            <h2 class="font-weight-bold text-white mb-3" style="font-size: 36px; letter-spacing: 0.5px;">
+                                ¿Querés saber más de nosotros?
+                            </h2>
+                            <p class="mb-4 mx-auto font-weight-bold" style="max-width: 750px; font-size: 21px; color: rgba(255, 255, 255, 0.95) !important;">
+                                Conocé nuestros ministerios, espacios y cómo podés ser parte de nuestra comunidad.
+                            </p>
+                            <a href="conecta.html" class="btn text-white rounded-pill px-5 py-3 font-weight-bold shadow-lg text-uppercase d-inline-flex align-items-center justify-content-center" style="background-color: #fd7e14; border-color: #fd7e14; font-size: 15px; letter-spacing: 1px; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#e66e0d';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#fd7e14';">
+                                <i class="bi bi-people-fill me-2 fs-5"></i> Conectate con Nosotros
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+<!-- Modal Oración -->
 <div class="modal fade" id="prayerRequestModal" tabindex="-1" aria-labelledby="prayerRequestModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -305,30 +388,76 @@
     </div>
 </div>
 
+<!-- Modal para Agregar Novedad (Admin cccsj) -->
+<div class="modal fade" id="nuevoAnuncioModal" tabindex="-1" aria-labelledby="nuevoAnuncioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h4 class="modal-title font-weight-bold text-dark" id="nuevoAnuncioModalLabel" style="font-size: 22px;">Publicar Nueva Novedad</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formNuevoAnuncio">
+                    <div class="mb-3">
+                        <label for="anuncioTitulo" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Título de la Novedad</label>
+                        <input type="text" class="form-control py-2" id="anuncioTitulo" placeholder="Ej: Conferencia de Matrimonios" required style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="anuncioRemitente" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Remitente (Persona o Ministerio)</label>
+                        <input type="text" class="form-control py-2" id="anuncioRemitente" placeholder="Ej: Ministerio de Jóvenes, Pastor..." required style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="anuncioFechaFin" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Activo hasta (Fecha límite)</label>
+                        <input type="text" class="form-control py-2" id="anuncioFechaFin" placeholder="dd/mm/aaaa" required style="border-radius: 8px; background-color: #fff;">
+                    </div>
+                    <button type="submit" class="btn custom-btn w-100 py-3 mt-3 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-megaphone-fill me-2"></i> Publicar Novedad
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <section class="featured-product section-padding" id="eventos-section">
+<!-- Modal Nuevo Destacado (Banner) -->
+<div class="modal fade" id="nuevoDestacadoModal" tabindex="-1" aria-labelledby="nuevoDestacadoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-primary text-white border-0" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title font-weight-bold text-white" id="nuevoDestacadoModalLabel"><i class="bi bi-image-fill me-2"></i> Subir Banner</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formNuevoDestacado">
+                    <div class="mb-3">
+                        <label for="destacadoFile" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Seleccionar Archivo Banner</label>
+                        <input type="file" class="form-control py-2" id="destacadoFile" accept="image/*,video/*" required style="border-radius: 8px;">
+                        <small class="text-muted" style="font-size: 11px;">Subí directamente el archivo de tu banner desde tu dispositivo.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="destacadoFechaFin" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Activo hasta (Fecha límite)</label>
+                        <input type="text" class="form-control py-2" id="destacadoFechaFin" placeholder="dd/mm/aaaa" required style="border-radius: 8px; background-color: #fff;">
+                    </div>
+                    <button type="submit" class="btn custom-btn w-100 py-3 mt-3 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-cloud-upload-fill me-2"></i> Publicar Banner
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <section class="featured-product section-padding" id="eventos-section" style="display: none;">
                 <div class="container">
                     <div class="row">
-                        <div id="anuncios-section-content">
-                            <div class="col-12 text-center">
-                                <h2 class="mb-5">Anuncios</h2>
-                            </div>
-                            <!-- Aquí se cargarán los anuncios desde Firebase -->
-                            <div id="anuncios-container" class="row">
-                                <!-- Los anuncios serán insertados dinámicamente aquí -->
-                            </div>
-                        </div>
                         <div id="eventos-section-content">
                             <div class="col-12 text-center">
                                 <h2 class="mb-5">Próximos Eventos</h2>
                             </div>
-                                        <!-- Aquí se cargarán los eventos desde Firebase -->
                             <div id="eventos-container" class="row">
                                 <!-- Los eventos serán insertados dinámicamente aquí -->
                             </div>
                         </div>
-                        
-                        
                     </div>
                 </div>
             </section>
@@ -445,89 +574,172 @@
                     .catch(err => {
                         console.error("Error fetching latest sermon from YouTube RSS feed:", err);
                     });
-
-                // Generate Weekly Activities Calendar Dynamically
-                const calendarContainer = document.getElementById('activitiesCalendarContainer');
-                const rangeText = document.getElementById('calendarRangeText');
-                if (calendarContainer && rangeText) {
-                    const activitiesData = {
-                        0: [ // Domingo
-                            { title: "Reunión Dominical", time: "10:00 - 12:15 hs", badge: "Principal", badgeClass: "bg-danger", borderClass: "border-danger", desc: "Tiempo de alabanza, enseñanza y comunión." },
-                            { title: "Escuela Bíblica", time: "10:00 hs", badge: "Niños", badgeClass: "bg-primary", borderClass: "border-primary", desc: "Lecciones para niños de 4 a 11 años durante la reunión." }
-                        ],
-                        2: [ // Martes
-                            { title: "Corona de Honra", time: "18:00 hs", badge: "Adultos Mayores", badgeClass: "bg-secondary text-white", borderClass: "border-secondary", desc: "Talleres y comunión para adultos de 60 años en adelante." }
-                        ],
-                        3: [ // Miércoles
-                            { title: "Madres Unidas en Oración", time: "15:00 hs", badge: "Madres", badgeClass: "bg-warning text-dark", borderClass: "border-warning", desc: "Oración intercesora por la vida de nuestros hijos." },
-                            { title: "Grupo de Oración", time: "20:00 hs", badge: "Espiritual", badgeClass: "bg-info text-dark", borderClass: "border-info", desc: "Búsqueda del Señor y tiempo de intercesión comunitaria." }
-                        ],
-                        6: [ // Sábado
-                            { title: "Linaje Escogido", time: "18:00 - 20:15 hs", badge: "Adolescentes", badgeClass: "bg-info text-dark", borderClass: "border-info", desc: "Crecimiento y comunión para adolescentes de 12 a 17 años." },
-                            { title: "Jóvenes", time: "20:30 hs", badge: "Jóvenes", badgeClass: "bg-danger", borderClass: "border-danger", desc: "Reflexión, alabanza y amistad para jóvenes de 18 a 33 años." }
-                        ]
-                    };
-
-                    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-                    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-
-                    const today = new Date();
-                    const oneWeekLater = new Date();
-                    oneWeekLater.setDate(today.getDate() + 6);
-                    
-                    rangeText.textContent = `Cronograma desde hoy ${today.getDate()} de ${monthNames[today.getMonth()]} al ${oneWeekLater.getDate()} de ${monthNames[oneWeekLater.getMonth()]}`;
-
-                    let html = "";
-                    for (let i = 0; i < 7; i++) {
-                        const currentDate = new Date();
-                        currentDate.setDate(today.getDate() + i);
-                        const dayOfWeek = currentDate.getDay();
-                        const dayOfMonth = currentDate.getDate();
-                        const monthName = monthNames[currentDate.getMonth()];
-
-                        if (activitiesData[dayOfWeek]) {
-                            let dayLabel = dayNames[dayOfWeek];
-                            if (i === 0) dayLabel = "Hoy - " + dayLabel;
-                            else if (i === 1) dayLabel = "Mañana - " + dayLabel;
-
-                            const formattedDate = `${dayOfMonth} de ${monthName}`;
-                            
-                            let eventsHtml = "";
-                            activitiesData[dayOfWeek].forEach(event => {
-                                eventsHtml += `
-                                    <div class="p-3 bg-white rounded-3 border-start border-3 ${event.borderClass} shadow-sm d-flex flex-column mb-2">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="badge ${event.badgeClass} rounded-pill px-2 py-1 font-weight-bold text-uppercase" style="font-size: 9px; letter-spacing: 0.5px;">${event.badge}</span>
-                                            <span class="text-muted" style="font-size: 11px; font-weight: 600;"><i class="bi bi-clock-fill me-1"></i> ${event.time}</span>
-                                        </div>
-                                        <h5 class="text-dark mb-1" style="font-size: 16px; font-weight: 700;">${event.title}</h5>
-                                        <p class="text-muted mb-0" style="font-size: 13px; line-height: 1.4;">${event.desc}</p>
-                                    </div>
-                                `;
-                            });
-
-                            html += `
-                                <div class="col d-flex">
-                                    <div class="card w-100 border-0 rounded-4 shadow-sm p-4 d-flex flex-column card-hover-effect" style="background-color: #f8f9fa;">
-                                        <div class="border-bottom pb-2 mb-3">
-                                            <span class="text-primary font-weight-bold d-block text-uppercase" style="font-size: 12px; letter-spacing: 0.5px;">${dayLabel}</span>
-                                            <h4 class="text-dark mb-0" style="font-size: 20px; font-weight: 700;">${formattedDate}</h4>
-                                        </div>
-                                        <div class="d-flex flex-column gap-2">
-                                            ${eventsHtml}
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    }
-                    calendarContainer.innerHTML = html;
-                }
             });
         </script>
         
         
         
+<!-- Modal Previsualizacion Imagen Destacada Completa con Slider -->
+<div class="modal fade" id="destacadoImageModal" tabindex="-1" aria-hidden="true" style="z-index: 1055;">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0 bg-dark rounded-4 shadow-lg overflow-hidden position-relative">
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 p-2 bg-secondary rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="z-index: 1060;"></button>
+            
+            <div class="modal-body p-2 p-md-4 d-flex align-items-center justify-content-between bg-dark position-relative" style="min-height: 400px;">
+                <!-- Boton Anterior -->
+                <button type="button" id="prevDestacadoModalBtn" class="btn btn-outline-light rounded-circle p-2 p-md-3 position-absolute start-0 ms-2 ms-md-4 shadow" style="z-index: 1060; background: rgba(0,0,0,0.6); border: none; display: none;">
+                    <i class="bi bi-chevron-left fs-3"></i>
+                </button>
+
+                <!-- Imagen Principal -->
+                <img id="destacadoModalFullImage" src="" class="img-fluid rounded-3 mx-auto" style="max-height: 80vh; max-width: 100%; object-fit: contain;">
+
+                <!-- Boton Siguiente -->
+                <button type="button" id="nextDestacadoModalBtn" class="btn btn-outline-light rounded-circle p-2 p-md-3 position-absolute end-0 me-2 me-md-4 shadow" style="z-index: 1060; background: rgba(0,0,0,0.6); border: none; display: none;">
+                    <i class="bi bi-chevron-right fs-3"></i>
+                </button>
+            </div>
+            
+            <!-- Contador -->
+            <div id="destacadoModalCounter" class="text-center text-white-50 pb-3 font-weight-bold" style="font-size: 14px; display: none;"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nuevo Encuentro -->
+<div class="modal fade" id="nuevoEncuentroModal" tabindex="-1" aria-labelledby="nuevoEncuentroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-primary text-white border-0" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title font-weight-bold text-white" id="nuevoEncuentroModalLabel"><i class="bi bi-calendar-plus-fill me-2"></i> Agregar Encuentro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formNuevoEncuentro">
+                    <div class="mb-3">
+                        <label for="encuentroTitle" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Ministerio / Nombre del Encuentro</label>
+                        <input type="text" class="form-control py-2" id="encuentroTitle" placeholder="Ej: Adolescentes, Jóvenes, Evento Especial..." required style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="encuentroTime" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Horario</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-clock-fill text-primary"></i></span>
+                            <input type="text" class="form-control py-2 border-start-0" id="encuentroTime" placeholder="Ej: 19:00" required style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="encuentroLugar" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Lugar (Opcional si es en la iglesia)</label>
+                        <input type="text" class="form-control py-2" id="encuentroLugar" placeholder="En la iglesia" style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="encuentroTipoRepeticion" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Frecuencia / Tipo</label>
+                        <select class="form-select py-2" id="encuentroTipoRepeticion" style="border-radius: 8px;">
+                            <option value="especifica">Para una fecha específica</option>
+                            <option value="semanal">Evento semanal (se repite todas las semanas)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="containerEncuentroFecha">
+                        <label for="encuentroFecha" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Fecha del Encuentro</label>
+                        <input type="text" class="form-control py-2" id="encuentroFecha" placeholder="dd/mm/aaaa" style="border-radius: 8px; background-color: #fff;">
+                    </div>
+                    <div class="mb-3" id="containerEncuentroDiaSemana" style="display: none;">
+                        <label for="encuentroDiaSemana" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Día de la semana</label>
+                        <select class="form-select py-2" id="encuentroDiaSemana" style="border-radius: 8px;">
+                            <option value="0">Domingo</option>
+                            <option value="1">Lunes</option>
+                            <option value="2">Martes</option>
+                            <option value="3">Miércoles</option>
+                            <option value="4">Jueves</option>
+                            <option value="5">Viernes</option>
+                            <option value="6">Sábado</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn custom-btn w-100 py-3 mt-3 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-check-circle-fill me-2"></i> Guardar Encuentro
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Encuentro -->
+<div class="modal fade" id="editarEncuentroModal" tabindex="-1" aria-labelledby="editarEncuentroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-dark text-white border-0" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title font-weight-bold text-white" id="editarEncuentroModalLabel"><i class="bi bi-pencil-square me-2"></i> Modificar Encuentro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formEditarEncuentro">
+                    <input type="hidden" id="editEncuentroId">
+                    <input type="hidden" id="editEncuentroTargetIso">
+
+                    <div class="mb-3" id="containerEditScopeRadio">
+                        <label class="form-label text-muted font-weight-bold" style="font-size: 14px;">¿Cómo querés aplicar esta modificación?</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="editScopeRadio" id="radioEspecial" value="especial" checked>
+                            <label class="form-check-label font-weight-bold text-dark" for="radioEspecial">
+                                Solo para este día específico <span class="badge bg-warning text-dark ms-1">Horario especial</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="editScopeRadio" id="radioPermanente" value="permanente">
+                            <label class="form-check-label font-weight-bold text-dark" for="radioPermanente">
+                                De forma permanente (todas las semanas)
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Cancel Switch for Fixed/Specific meetings -->
+                    <div class="form-check form-switch mb-3 p-3 bg-light rounded-3 border border-danger-subtle d-flex align-items-center gap-2">
+                        <input class="form-check-input ms-0" type="checkbox" id="editEncuentroCancelled" style="cursor: pointer; transform: scale(1.2);">
+                        <label class="form-check-label font-weight-bold text-danger mb-0 ms-2" for="editEncuentroCancelled" style="cursor: pointer; font-size: 13.5px;">
+                            <i class="bi bi-slash-circle-fill me-1"></i> Cancelar reunión para esta fecha (se muestra en rojo)
+                        </label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editEncuentroTitle" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Ministerio / Nombre</label>
+                        <input type="text" class="form-control py-2" id="editEncuentroTitle" required style="border-radius: 8px;">
+                    </div>
+
+                    <div class="mb-3" id="containerEditEncuentroFecha">
+                        <label for="editEncuentroFecha" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Fecha del Encuentro</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-calendar-event text-primary"></i></span>
+                            <input type="text" class="form-control py-2 border-start-0" id="editEncuentroFecha" placeholder="dd/mm/aaaa" style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editEncuentroTime" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Horario</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-clock-fill text-primary"></i></span>
+                            <input type="text" class="form-control py-2 border-start-0" id="editEncuentroTime" placeholder="Ej: 19:00" required style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editEncuentroLugar" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Lugar</label>
+                        <input type="text" class="form-control py-2" id="editEncuentroLugar" style="border-radius: 8px;">
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-danger btn-sm rounded-3 py-2 px-3" id="btnDeleteEncuentro">
+                            <i class="bi bi-trash-fill me-1"></i> Eliminar Encuentro
+                        </button>
+                        <div class="d-flex gap-2 ms-auto">
+                            <button type="button" class="btn btn-outline-secondary btn-sm rounded-3 py-2 px-3" id="btnResetEncuentrosDefaults" title="Restablecer fijos por defecto">Restablecer Fijos</button>
+                            <button type="submit" class="btn btn-primary rounded-3 py-2 px-4 font-weight-bold">Guardar Cambios</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
         <!-- JAVASCRIPT FILES -->
         <script src="js/jquery.min.js"></script>
         <script src="js/bootstrap.bundle.min.js"></script>
@@ -535,6 +747,12 @@
         <script src="js/jQuery.headroom.js"></script>
         <script src="js/slick.min.js"></script>
         <script src="js/custom.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+        <script src="js/anuncios.js"></script>
+        <script src="js/destacados.js"></script>
+        <script src="js/encuentros.js"></script>
+        <script src="js/admin-global.js"></script>
 
 
     </body>

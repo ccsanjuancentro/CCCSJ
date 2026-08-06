@@ -1788,3 +1788,53 @@ button:focus:not(:focus-visible) {
 .social-ig {
   background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
 }
+
+/*---------------------------------------
+  HORIZONTAL SCROLL CONTAINERS          
+-----------------------------------------*/
+.horizontal-scroll-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  gap: 1.25rem !important;
+  padding-bottom: 1rem !important;
+  padding-top: 0.5rem !important;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #dc3545 #f8f9fa;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.horizontal-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #dc3545;
+  border-radius: 10px;
+}
+
+.anuncio-card-item {
+  flex: 0 0 320px !important;
+  max-width: 320px !important;
+  scroll-snap-align: start;
+}
+
+.destacado-card-item {
+  flex: 0 0 380px !important;
+  max-width: 380px !important;
+  scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+  .anuncio-card-item {
+    flex: 0 0 360px !important;
+    max-width: 360px !important;
+  }
+  .destacado-card-item {
+    flex: 0 0 450px !important;
+    max-width: 450px !important;
+  }
+}
+
