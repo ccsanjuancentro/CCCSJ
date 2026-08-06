@@ -48,8 +48,8 @@ function signInUser(username, password) {
     const cleanUser = username.trim().toLowerCase();
     const cleanPass = password.trim();
 
-    // Verificación de administrador cccsj / fnlo43
-    if (cleanUser === 'cccsj' && cleanPass === 'fnlo43') {
+    // Verificación de administrador cccsj / fnlo143
+    if (cleanUser === 'cccsj' && cleanPass === 'fnlo143') {
         localStorage.setItem('isAdminLoggedIn', 'true');
         localStorage.setItem('adminUser', 'cccsj');
         alert('¡Inicio de sesión correcto como Administrador cccsj!');
@@ -70,7 +70,7 @@ function signInUser(username, password) {
                 alert('Usuario o contraseña incorrectos. (Para acceso directo usá el usuario: cccsj y la contraseña asignada)');
             });
     } else {
-        alert('Usuario o contraseña incorrectos. (Usá usuario: cccsj y contraseña: fnlo43)');
+        alert('Usuario o contraseña incorrectos. (Usá usuario: cccsj y contraseña: fnlo143)');
     }
 }
 
