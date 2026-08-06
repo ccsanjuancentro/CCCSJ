@@ -1,111 +1,94 @@
-// Management script for Destacados using IndexedDB Raw Blobs (Zero RAM Overhead, Instant Load, No Browser Crashes)
+// Management script for Destacados using Firebase Storage & Firestore
 (function () {
     "use strict";
 
-    const DB_NAME = 'CCCSJ_DestacadosDB';
-    const DB_VERSION = 1;
-    const STORE_NAME = 'destacados';
+    // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpL5fjAy05rV2OMWFWwRwy4ttElmhtqBg",
+        authDomain: "iglesiaccsj143.firebaseapp.com",
+        projectId: "iglesiaccsj143",
+        storageBucket: "iglesiaccsj143.firebasestorage.app",
+        messagingSenderId: "141392861764",
+        appId: "1:141392861764:web:2d91da3c7b985f0d15ba11",
+        measurementId: "G-4N1DQTQK11"
+    };
+
+    // Inicializa Firebase si no está inicializado
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    const storage = firebase.storage();
 
     let activePreviewList = [];
     let currentPreviewIndex = 0;
 
-    function openDB() {
-        return new Promise((resolve, reject) => {
-            if (!window.indexedDB) {
-                reject('IndexedDB not supported');
-                return;
-            }
-            const request = indexedDB.open(DB_NAME, DB_VERSION);
-            request.onupgradeneeded = function (e) {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(STORE_NAME)) {
-                    db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                }
-            };
-            request.onsuccess = function (e) {
-                resolve(e.target.result);
-            };
-            request.onerror = function (e) {
-                reject(e);
-            };
-        });
-    }
-
     async function getDestacadosAsync() {
         try {
-            const db = await openDB();
-            return new Promise((resolve) => {
-                const tx = db.transaction(STORE_NAME, 'readonly');
-                const store = tx.objectStore(STORE_NAME);
-                const req = store.getAll();
-                req.onsuccess = function () {
-                    resolve(req.result || []);
-                };
-                req.onerror = function () {
-                    resolve(getFallbackLocalStorage());
-                };
+            const snapshot = await db.collection('destacados').get();
+            const list = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                list.push({
+                    id: doc.id,
+                    ...data
+                });
             });
+            // Ordenar por fecha de creación desc
+            list.sort((a, b) => (b.fechaCreado || 0) - (a.fechaCreado || 0));
+            return list;
         } catch (e) {
-            return getFallbackLocalStorage();
-        }
-    }
-
-    async function saveDestacadosAsync(list) {
-        saveFallbackLocalStorage(list);
-
-        try {
-            const db = await openDB();
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            const store = tx.objectStore(STORE_NAME);
-            store.clear();
-            list.forEach(item => store.put(item));
-            return new Promise((resolve, reject) => {
-                tx.oncomplete = function () {
-                    resolve(true);
-                };
-                tx.onerror = function (err) {
-                    reject(err);
-                };
-            });
-        } catch (e) {
-            console.warn('IndexedDB save fallback used:', e);
-        }
-    }
-
-    function getFallbackLocalStorage() {
-        const stored = localStorage.getItem('ccs_destacados');
-        if (!stored) return [];
-        try {
-            return JSON.parse(stored);
-        } catch (e) {
+            console.error("Error al obtener destacados de Firestore:", e);
             return [];
         }
     }
 
-    function saveFallbackLocalStorage(list) {
+    async function uploadDestacadoAsync(file, fechaExpiracion) {
         try {
-            // Save light metadata without heavy file content to prevent LocalStorage quota errors
-            const lightList = list.map(item => {
-                const copy = { ...item };
-                delete copy.fileBlob;
-                delete copy.dataUrl;
-                return copy;
+            const id = Date.now().toString();
+            const extension = file.name.split('.').pop();
+            const storagePath = `destacados/${id}.${extension}`;
+            const storageRef = storage.ref().child(storagePath);
+
+            // Subir archivo a Storage
+            const uploadTask = await storageRef.put(file);
+            const fileUrl = await uploadTask.ref.getDownloadURL();
+
+            // Guardar metadatos en Firestore
+            await db.collection('destacados').doc(id).set({
+                fileUrl: fileUrl,
+                fileType: file.type,
+                fechaExpiracion: fechaExpiracion,
+                fechaCreado: Date.now()
             });
-            localStorage.setItem('ccs_destacados', JSON.stringify(lightList));
         } catch (e) {
-            console.error('LocalStorage metadata save exception:', e);
+            console.error("Error al subir destacado a Firebase:", e);
+            throw e;
+        }
+    }
+
+    async function deleteDestacadoAsync(id, fileUrl) {
+        try {
+            // Eliminar de Storage
+            if (fileUrl) {
+                try {
+                    const storageRef = storage.refFromURL(fileUrl);
+                    await storageRef.delete();
+                } catch (err) {
+                    console.warn("No se pudo eliminar el archivo de Storage:", err);
+                }
+            }
+            // Eliminar de Firestore
+            await db.collection('destacados').doc(id).delete();
+        } catch (e) {
+            console.error("Error al eliminar destacado de Firebase:", e);
+            throw e;
         }
     }
 
     function getItemMediaSrc(item) {
         if (!item) return '';
-        if (item.fileBlob instanceof Blob) {
-            return URL.createObjectURL(item.fileBlob);
-        }
-        if (item.dataUrl) {
-            return item.dataUrl;
-        }
-        return '';
+        return item.fileUrl || '';
     }
 
     function normalizeDateYYYYMMDD(dateStr) {
@@ -230,9 +213,11 @@
         const validList = rawList.filter(item => isDestacadoValid(item.fechaExpiracion));
         activePreviewList = validList;
 
-        // Purge expired items permanently from storage
-        if (validList.length !== rawList.length) {
-            await saveDestacadosAsync(validList);
+        // Purge expired items permanently
+        for (const item of rawList) {
+            if (!isDestacadoValid(item.fechaExpiracion)) {
+                await deleteDestacadoAsync(item.id, item.fileUrl).catch(() => {});
+            }
         }
 
         if (validList.length === 0 && !isAdmin) {
@@ -279,7 +264,7 @@
             const adminInfoHTML = isAdmin ? `
                 <div class="d-flex align-items-center justify-content-between text-muted mt-2 small px-1" style="font-size: 11px;">
                     <span><i class="bi bi-calendar-event me-1"></i>Vence: <strong>${dateDMY || 'Sin fecha'}</strong></span>
-                    <button class="btn btn-outline-danger btn-sm rounded-pill px-2 py-0 delete-destacado-btn" data-id="${item.id}" style="font-size: 11px;">
+                    <button class="btn btn-outline-danger btn-sm rounded-pill px-2 py-0 delete-destacado-btn" data-id="${item.id}" data-url="${item.fileUrl || ''}" style="font-size: 11px;">
                         <i class="bi bi-trash"></i> Eliminar
                     </button>
                 </div>
@@ -316,12 +301,15 @@
             deleteBtns.forEach(btn => {
                 btn.addEventListener('click', async function () {
                     const idToDelete = this.getAttribute('data-id');
+                    const fileUrlToDelete = this.getAttribute('data-url');
                     if (confirm('¿Estás seguro de que querés eliminar este destacado?')) {
-                        const currentList = await getDestacadosAsync();
-                        const updated = currentList.filter(d => d.id !== idToDelete);
-                        await saveDestacadosAsync(updated);
-                        await renderDestacados();
-                        alert('Destacado eliminado correctamente.');
+                        try {
+                            await deleteDestacadoAsync(idToDelete, fileUrlToDelete);
+                            await renderDestacados();
+                            alert('Destacado eliminado correctamente.');
+                        } catch (err) {
+                            alert('Error al intentar eliminar el destacado.');
+                        }
                     }
                 });
             });
@@ -428,17 +416,7 @@
                 }
 
                 try {
-                    // Store raw file Blob directly in IndexedDB (0 memory overhead, instant saving)
-                    const newDestacado = {
-                        id: Date.now().toString(),
-                        fileBlob: file,
-                        fileType: file.type,
-                        fechaExpiracion: fechaExpiracion
-                    };
-
-                    const currentList = await getDestacadosAsync();
-                    currentList.unshift(newDestacado);
-                    await saveDestacadosAsync(currentList);
+                    await uploadDestacadoAsync(file, fechaExpiracion);
 
                     formNuevo.reset();
                     const modalEl = document.getElementById('nuevoDestacadoModal');
@@ -450,8 +428,8 @@
                     await renderDestacados();
                     alert(`¡Destacado publicado con éxito! Estará visible hasta el ${dateDMY}.`);
                 } catch (err) {
-                    console.error('Error saving raw Blob to IndexedDB:', err);
-                    alert('Ocurrió un error al guardar el archivo en el navegador.');
+                    console.error('Error saving to Firebase:', err);
+                    alert('Ocurrió un error al subir el archivo a Firebase.');
                 } finally {
                     if (submitBtn) {
                         submitBtn.disabled = false;

@@ -2,8 +2,22 @@
 (function () {
     "use strict";
 
-    const STORAGE_KEY = 'ccs_encuentros';
-    const OVERRIDES_KEY = 'ccs_encuentros_overrides';
+    // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpL5fjAy05rV2OMWFWwRwy4ttElmhtqBg",
+        authDomain: "iglesiaccsj143.firebaseapp.com",
+        projectId: "iglesiaccsj143",
+        storageBucket: "iglesiaccsj143.firebasestorage.app",
+        messagingSenderId: "141392861764",
+        appId: "1:141392861764:web:2d91da3c7b985f0d15ba11",
+        measurementId: "G-4N1DQTQK11"
+    };
+
+    // Inicializa Firebase si no está inicializado
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
 
     const DEFAULT_ENCUENTROS = [
         { id: 'fixed_domingo', title: 'Reunión Dominical', time: '10:00 hs', lugar: 'En la iglesia', dayOfWeek: 0, isRecurring: true, isFixedDefault: true, borderClass: 'border-danger' },
@@ -16,35 +30,96 @@
         return localStorage.getItem('isAdminLoggedIn') === 'true';
     }
 
-    function getEncuentros() {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (!stored) {
-            saveEncuentros(DEFAULT_ENCUENTROS);
-            return DEFAULT_ENCUENTROS;
-        }
+    async function getEncuentros() {
         try {
-            return JSON.parse(stored);
+            const snapshot = await db.collection('encuentros').get();
+            const list = [];
+            snapshot.forEach(doc => {
+                list.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+
+            // If empty, seed database with default encounters
+            if (list.length === 0) {
+                for (const item of DEFAULT_ENCUENTROS) {
+                    await db.collection('encuentros').doc(item.id).set(item);
+                    list.push(item);
+                }
+            }
+            return list;
         } catch (e) {
+            console.error("Error al obtener encuentros de Firestore:", e);
             return DEFAULT_ENCUENTROS;
         }
     }
 
-    function saveEncuentros(list) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-    }
-
-    function getOverrides() {
-        const stored = localStorage.getItem(OVERRIDES_KEY);
-        if (!stored) return [];
+    async function getOverrides() {
         try {
-            return JSON.parse(stored);
+            const snapshot = await db.collection('encuentros_overrides').get();
+            const list = [];
+            snapshot.forEach(doc => {
+                list.push({
+                    id: doc.id,
+                    ...doc.data()
+                });
+            });
+            return list;
         } catch (e) {
+            console.error("Error al obtener overrides de Firestore:", e);
             return [];
         }
     }
 
-    function saveOverrides(list) {
-        localStorage.setItem(OVERRIDES_KEY, JSON.stringify(list));
+    async function saveEncuentros(list) {
+        try {
+            const snapshot = await db.collection('encuentros').get();
+            const existingIds = [];
+            snapshot.forEach(doc => existingIds.push(doc.id));
+
+            for (const item of list) {
+                await db.collection('encuentros').doc(item.id).set(item);
+            }
+
+            const newIds = list.map(item => item.id);
+            for (const id of existingIds) {
+                if (!newIds.includes(id)) {
+                    await db.collection('encuentros').doc(id).delete();
+                }
+            }
+        } catch (e) {
+            console.error("Error al guardar encuentros en Firestore:", e);
+        }
+    }
+
+    async function saveOverrides(list) {
+        try {
+            const snapshot = await db.collection('encuentros_overrides').get();
+            const existingIds = [];
+            snapshot.forEach(doc => existingIds.push(doc.id));
+
+            for (const item of list) {
+                const docId = `override_${item.encuentroId}_${item.fecha}`;
+                await db.collection('encuentros_overrides').doc(docId).set({
+                    encuentroId: item.encuentroId,
+                    fecha: item.fecha,
+                    cancelled: !!item.cancelled,
+                    time: item.time || null,
+                    lugar: item.lugar || null,
+                    title: item.title || null
+                });
+            }
+
+            const newDocIds = list.map(item => `override_${item.encuentroId}_${item.fecha}`);
+            for (const id of existingIds) {
+                if (!newDocIds.includes(id)) {
+                    await db.collection('encuentros_overrides').doc(id).delete();
+                }
+            }
+        } catch (e) {
+            console.error("Error al guardar overrides en Firestore:", e);
+        }
     }
 
     function normalizeDateYYYYMMDD(d) {
@@ -82,11 +157,9 @@
         return 'border-primary';
     }
 
-    function getEventsForDate(targetDate) {
+    function getEventsForDate(targetDate, allEncuentros, allOverrides) {
         const targetIso = normalizeDateYYYYMMDD(targetDate);
         const targetDayOfWeek = targetDate.getDay();
-        const allEncuentros = getEncuentros();
-        const allOverrides = getOverrides();
 
         let results = [];
 
@@ -127,12 +200,15 @@
         return results;
     }
 
-    function renderEncuentrosCalendar() {
+    async function renderEncuentrosCalendar() {
         const calendarContainer = document.getElementById('activitiesCalendarContainer');
         const adminBar = document.getElementById('adminEncuentrosBar');
         if (!calendarContainer) return;
 
         const isAdmin = checkAdminStatus();
+        const allEncuentros = await getEncuentros();
+        const allOverrides = await getOverrides();
+
         const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
         const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
@@ -166,7 +242,7 @@
             else if (i === 1) tagLabel = "MAÑANA";
 
             const formattedDate = `${dayOfMonth} ${monthName}`;
-            const dayEvents = getEventsForDate(currentDate);
+            const dayEvents = getEventsForDate(currentDate, allEncuentros, allOverrides);
             const hasEvents = dayEvents.length > 0;
 
             if (hasEvents) {
@@ -245,7 +321,7 @@
         calendarContainer.innerHTML = html;
 
         // Render Future / Off-Calendar Events List for Admin in Grey ("Eventos Futuros Grisados")
-        renderFutureEventsGrisados(isAdmin, weekDatesIso);
+        renderFutureEventsGrisados(isAdmin, weekDatesIso, allEncuentros);
 
         // Attach event listeners for Admin edit buttons
         if (isAdmin) {
@@ -260,7 +336,7 @@
         }
     }
 
-    function renderFutureEventsGrisados(isAdmin, currentWeekIsoList) {
+    function renderFutureEventsGrisados(isAdmin, currentWeekIsoList, allEncuentros) {
         const container = document.getElementById('futureEventsContainer');
         const section = document.getElementById('futureEventsSection');
         if (!container || !section) return;
@@ -270,7 +346,6 @@
             return;
         }
 
-        const allEncuentros = getEncuentros();
         const todayIso = normalizeDateYYYYMMDD(new Date());
 
         // Find single-date future events that are AFTER current week
@@ -319,20 +394,20 @@
         // Attach delete listeners
         const deleteBtns = container.querySelectorAll('.btn-delete-future');
         deleteBtns.forEach(btn => {
-            btn.addEventListener('click', function () {
+            btn.addEventListener('click', async function () {
                 const idToDelete = this.getAttribute('data-id');
                 if (confirm('¿Estás seguro de eliminar este evento futuro?')) {
-                    const list = getEncuentros().filter(item => item.id !== idToDelete);
-                    saveEncuentros(list);
-                    renderEncuentrosCalendar();
+                    const list = (await getEncuentros()).filter(item => item.id !== idToDelete);
+                    await saveEncuentros(list);
+                    await renderEncuentrosCalendar();
                     alert('Evento futuro eliminado.');
                 }
             });
         });
     }
 
-    function openEditarModal(id, targetIso) {
-        const allEncuentros = getEncuentros();
+    async function openEditarModal(id, targetIso) {
+        const allEncuentros = await getEncuentros();
         const event = allEncuentros.find(e => e.id === id);
         if (!event) return;
 
@@ -352,7 +427,7 @@
         }
 
         // Set cancellation checkbox status
-        const overrides = getOverrides();
+        const overrides = await getOverrides();
         const currentOverride = overrides.find(o => o.encuentroId === id && o.fecha === targetIso);
         const cancelledCheck = document.getElementById('editEncuentroCancelled');
         if (cancelledCheck) {
@@ -426,7 +501,7 @@
         // Handle Nuevo Encuentro Form Submission
         const formNuevo = document.getElementById('formNuevoEncuentro');
         if (formNuevo) {
-            formNuevo.addEventListener('submit', function (e) {
+            formNuevo.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 const titleInput = document.getElementById('encuentroTitle');
@@ -469,63 +544,81 @@
                     newEncuentro.dayOfWeek = targetDateObj.getDay();
                 }
 
-                const list = getEncuentros();
-                list.push(newEncuentro);
-                saveEncuentros(list);
+                const submitBtn = formNuevo.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
 
-                formNuevo.reset();
-                const modalEl = document.getElementById('nuevoEncuentroModal');
-                if (modalEl && window.bootstrap) {
-                    const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
-                    modalObj.hide();
+                try {
+                    const list = await getEncuentros();
+                    list.push(newEncuentro);
+                    await saveEncuentros(list);
+
+                    formNuevo.reset();
+                    const modalEl = document.getElementById('nuevoEncuentroModal');
+                    if (modalEl && window.bootstrap) {
+                        const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+                        modalObj.hide();
+                    }
+
+                    await renderEncuentrosCalendar();
+                    alert('¡Encuentro creado con éxito!');
+                } catch (err) {
+                    alert('Error al guardar el encuentro en la base de datos.');
+                } finally {
+                    if (submitBtn) submitBtn.disabled = false;
                 }
-
-                renderEncuentrosCalendar();
-                alert('¡Encuentro creado con éxito!');
             });
         }
 
         // Handle Delete Encuentro Button
         const btnDelete = document.getElementById('btnDeleteEncuentro');
         if (btnDelete) {
-            btnDelete.addEventListener('click', function () {
+            btnDelete.addEventListener('click', async function () {
                 const id = document.getElementById('editEncuentroId').value;
                 const targetIso = document.getElementById('editEncuentroTargetIso').value;
-                const list = getEncuentros();
+                const list = await getEncuentros();
                 const item = list.find(e => e.id === id);
 
                 if (!item) return;
 
-                if (item.isRecurring) {
-                    if (confirm('¿Querés cancelar esta reunión solo para este día (en rojo) o eliminar la regla semanal por completo?\n\n[OK] = Cancelar solo para este día (se verá en rojo)\n[Cancelar] = Eliminar encuentro semanal permanentemente')) {
-                        const overrides = getOverrides();
-                        const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
-                        filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
-                        saveOverrides(filtered);
-                    } else {
-                        const updated = list.filter(e => e.id !== id);
-                        saveEncuentros(updated);
-                    }
-                } else {
-                    if (confirm('¿Estás seguro de eliminar este encuentro?')) {
-                        const updated = list.filter(e => e.id !== id);
-                        saveEncuentros(updated);
-                    }
-                }
+                const submitBtn = this;
+                submitBtn.disabled = true;
 
-                const modalEl = document.getElementById('editarEncuentroModal');
-                if (modalEl && window.bootstrap) {
-                    const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
-                    modalObj.hide();
+                try {
+                    if (item.isRecurring) {
+                        if (confirm('¿Querés cancelar esta reunión solo para este día (en rojo) o eliminar la regla semanal por completo?\n\n[OK] = Cancelar solo para este día (se verá en rojo)\n[Cancelar] = Eliminar encuentro semanal permanentemente')) {
+                            const overrides = await getOverrides();
+                            const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
+                            filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
+                            await saveOverrides(filtered);
+                        } else {
+                            const updated = list.filter(e => e.id !== id);
+                            await saveEncuentros(updated);
+                        }
+                    } else {
+                        if (confirm('¿Estás seguro de eliminar este encuentro?')) {
+                            const updated = list.filter(e => e.id !== id);
+                            await saveEncuentros(updated);
+                        }
+                    }
+
+                    const modalEl = document.getElementById('editarEncuentroModal');
+                    if (modalEl && window.bootstrap) {
+                        const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+                        modalObj.hide();
+                    }
+                    await renderEncuentrosCalendar();
+                } catch (err) {
+                    alert('Error al intentar eliminar el encuentro.');
+                } finally {
+                    submitBtn.disabled = false;
                 }
-                renderEncuentrosCalendar();
             });
         }
 
         // Handle Editar Encuentro Form
         const formEditar = document.getElementById('formEditarEncuentro');
         if (formEditar) {
-            formEditar.addEventListener('submit', function (e) {
+            formEditar.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 const id = document.getElementById('editEncuentroId').value;
@@ -543,91 +636,108 @@
                     return;
                 }
 
-                const list = getEncuentros();
-                const item = list.find(e => e.id === id);
-                if (!item) return;
+                const submitBtn = formEditar.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
 
-                const newIsoFecha = normalizeDateYYYYMMDD(rawNewFecha);
+                try {
+                    const list = await getEncuentros();
+                    const item = list.find(e => e.id === id);
+                    if (!item) return;
 
-                if (isCancelled) {
-                    // Mark as cancelled for targetIso
-                    const overrides = getOverrides();
-                    const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
-                    filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
-                    saveOverrides(filtered);
-                } else if (!item.isRecurring) {
-                    // Single date event modification (update title, time, lugar, and new fecha)
-                    item.title = newTitle;
-                    item.time = newTime;
-                    item.lugar = newLugar;
-                    item.borderClass = getBorderClass(newTitle);
-                    if (newIsoFecha) {
-                        item.fecha = newIsoFecha;
-                        const dObj = new Date(newIsoFecha + 'T00:00:00');
-                        item.dayOfWeek = dObj.getDay();
-                    }
-                    saveEncuentros(list);
-                } else if (editScope === 'permanente') {
-                    // Update main recurring object permanently
-                    item.title = newTitle;
-                    item.time = newTime;
-                    item.lugar = newLugar;
-                    item.borderClass = getBorderClass(newTitle);
-                    saveEncuentros(list);
-                } else {
-                    // Create single day override exception
-                    const overrides = getOverrides();
-                    const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
-                    
-                    if (newIsoFecha && newIsoFecha !== targetIso) {
-                        // Date changed for single occurrence: cancel original day & create single date event on newIsoFecha
+                    const newIsoFecha = normalizeDateYYYYMMDD(rawNewFecha);
+
+                    if (isCancelled) {
+                        // Mark as cancelled for targetIso
+                        const overrides = await getOverrides();
+                        const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
                         filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
-                        saveOverrides(filtered);
-
-                        const dObj = new Date(newIsoFecha + 'T00:00:00');
-                        list.push({
-                            id: Date.now().toString(),
-                            title: newTitle,
-                            time: newTime,
-                            lugar: newLugar,
-                            fecha: newIsoFecha,
-                            dayOfWeek: dObj.getDay(),
-                            isRecurring: false,
-                            borderClass: getBorderClass(newTitle)
-                        });
-                        saveEncuentros(list);
+                        await saveOverrides(filtered);
+                    } else if (!item.isRecurring) {
+                        // Single date event modification
+                        item.title = newTitle;
+                        item.time = newTime;
+                        item.lugar = newLugar;
+                        item.borderClass = getBorderClass(newTitle);
+                        if (newIsoFecha) {
+                            item.fecha = newIsoFecha;
+                            const dObj = new Date(newIsoFecha + 'T00:00:00');
+                            item.dayOfWeek = dObj.getDay();
+                        }
+                        await saveEncuentros(list);
+                    } else if (editScope === 'permanente') {
+                        // Update main recurring object permanently
+                        item.title = newTitle;
+                        item.time = newTime;
+                        item.lugar = newLugar;
+                        item.borderClass = getBorderClass(newTitle);
+                        await saveEncuentros(list);
                     } else {
-                        filtered.push({
-                            encuentroId: id,
-                            fecha: targetIso,
-                            title: newTitle,
-                            time: newTime,
-                            lugar: newLugar,
-                            cancelled: false
-                        });
-                        saveOverrides(filtered);
+                        // Create single day override exception
+                        const overrides = await getOverrides();
+                        const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
+                        
+                        if (newIsoFecha && newIsoFecha !== targetIso) {
+                            // Date changed for single occurrence
+                            filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
+                            await saveOverrides(filtered);
+
+                            const dObj = new Date(newIsoFecha + 'T00:00:00');
+                            list.push({
+                                id: Date.now().toString(),
+                                title: newTitle,
+                                time: newTime,
+                                lugar: newLugar,
+                                fecha: newIsoFecha,
+                                dayOfWeek: dObj.getDay(),
+                                isRecurring: false,
+                                borderClass: getBorderClass(newTitle)
+                            });
+                            await saveEncuentros(list);
+                        } else {
+                            filtered.push({
+                                encuentroId: id,
+                                fecha: targetIso,
+                                title: newTitle,
+                                time: newTime,
+                                lugar: newLugar,
+                                cancelled: false
+                            });
+                            await saveOverrides(filtered);
+                        }
                     }
-                }
 
-                const modalEl = document.getElementById('editarEncuentroModal');
-                if (modalEl && window.bootstrap) {
-                    const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
-                    modalObj.hide();
-                }
+                    const modalEl = document.getElementById('editarEncuentroModal');
+                    if (modalEl && window.bootstrap) {
+                        const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+                        modalObj.hide();
+                    }
 
-                renderEncuentrosCalendar();
-                alert('¡Modificación guardada exitosamente!');
+                    await renderEncuentrosCalendar();
+                    alert('¡Modificación guardada exitosamente!');
+                } catch (err) {
+                    alert('Error al guardar la modificación.');
+                } finally {
+                    if (submitBtn) submitBtn.disabled = false;
+                }
             });
 
             // Handle Reset to Defaults button
             const btnResetDefaults = document.getElementById('btnResetEncuentrosDefaults');
             if (btnResetDefaults) {
-                btnResetDefaults.addEventListener('click', function () {
+                btnResetDefaults.addEventListener('click', async function () {
                     if (confirm('¿Querés restablecer los 4 encuentros fijos originales?')) {
-                        saveEncuentros(DEFAULT_ENCUENTROS);
-                        saveOverrides([]);
-                        renderEncuentrosCalendar();
-                        alert('Encuentros restablecidos a los 4 fijos originales.');
+                        const submitBtn = this;
+                        submitBtn.disabled = true;
+                        try {
+                            await saveEncuentros(DEFAULT_ENCUENTROS);
+                            await saveOverrides([]);
+                            await renderEncuentrosCalendar();
+                            alert('Encuentros restablecidos a los 4 fijos originales.');
+                        } catch (err) {
+                            alert('Error al restablecer los encuentros.');
+                        } finally {
+                            submitBtn.disabled = false;
+                        }
                     }
                 });
             }

@@ -2,6 +2,23 @@
 (function () {
     "use strict";
 
+    // Configuración de Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyCpL5fjAy05rV2OMWFWwRwy4ttElmhtqBg",
+        authDomain: "iglesiaccsj143.firebaseapp.com",
+        projectId: "iglesiaccsj143",
+        storageBucket: "iglesiaccsj143.firebasestorage.app",
+        messagingSenderId: "141392861764",
+        appId: "1:141392861764:web:2d91da3c7b985f0d15ba11",
+        measurementId: "G-4N1DQTQK11"
+    };
+
+    // Inicializa Firebase si no está inicializado
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
     // Smart date normalizer: handles DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD
     function normalizeDateYYYYMMDD(dateStr) {
         if (!dateStr) return '';
@@ -89,27 +106,54 @@
         }
     }
 
-    function getAnuncios() {
-        const stored = localStorage.getItem('ccs_anuncios');
-        if (!stored) {
-            return [];
-        }
+    async function getAnuncios() {
         try {
-            return JSON.parse(stored);
+            const snapshot = await db.collection('anuncios').get();
+            const list = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                list.push({
+                    id: doc.id,
+                    ...data
+                });
+            });
+            // Ordenar por fecha de creación desc
+            list.sort((a, b) => (b.fechaCreado || 0) - (a.fechaCreado || 0));
+            return list;
         } catch (e) {
+            console.error("Error al obtener anuncios de Firestore:", e);
             return [];
         }
     }
 
-    function saveAnuncios(list) {
-        localStorage.setItem('ccs_anuncios', JSON.stringify(list));
+    async function addAnuncio(anuncio) {
+        try {
+            await db.collection('anuncios').doc(anuncio.id).set({
+                titulo: anuncio.titulo,
+                remitente: anuncio.remitente,
+                fechaExpiracion: anuncio.fechaExpiracion,
+                fechaCreado: Date.now()
+            });
+        } catch (e) {
+            console.error("Error al guardar anuncio en Firestore:", e);
+            throw e;
+        }
+    }
+
+    async function deleteAnuncio(id) {
+        try {
+            await db.collection('anuncios').doc(id).delete();
+        } catch (e) {
+            console.error("Error al eliminar anuncio de Firestore:", e);
+            throw e;
+        }
     }
 
     function checkAdminStatus() {
         return localStorage.getItem('isAdminLoggedIn') === 'true';
     }
 
-    function renderAnuncios() {
+    async function renderAnuncios() {
         const section = document.getElementById('anuncios-section');
         const container = document.getElementById('anuncios-container');
         const adminBar = document.getElementById('adminAnunciosBar');
@@ -117,14 +161,16 @@
         if (!container || !section) return;
 
         const isAdmin = checkAdminStatus();
-        const rawList = getAnuncios();
+        const rawList = await getAnuncios();
 
         // Filter valid non-expired items
         const validList = rawList.filter(item => isAnuncioValid(item.fechaExpiracion));
 
         // Purge expired anuncios permanently from storage
-        if (validList.length !== rawList.length) {
-            saveAnuncios(validList);
+        for (const item of rawList) {
+            if (!isAnuncioValid(item.fechaExpiracion)) {
+                await deleteAnuncio(item.id).catch(() => {});
+            }
         }
 
         if (validList.length === 0 && !isAdmin) {
@@ -193,14 +239,16 @@
         if (isAdmin) {
             const deleteBtns = container.querySelectorAll('.delete-anuncio-btn');
             deleteBtns.forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', async function () {
                     const idToDelete = this.getAttribute('data-id');
                     if (confirm('¿Estás seguro de que querés eliminar esta novedad?')) {
-                        const currentList = getAnuncios();
-                        const updated = currentList.filter(a => a.id !== idToDelete);
-                        saveAnuncios(updated);
-                        renderAnuncios();
-                        alert('Novedad eliminada correctamente.');
+                        try {
+                            await deleteAnuncio(idToDelete);
+                            await renderAnuncios();
+                            alert('Novedad eliminada correctamente.');
+                        } catch (err) {
+                            alert('Error al intentar eliminar de la base de datos.');
+                        }
                     }
                 });
             });
@@ -227,7 +275,7 @@
         // Form submit for new anuncio with strict validation & confirmation
         const formNuevo = document.getElementById('formNuevoAnuncio');
         if (formNuevo) {
-            formNuevo.addEventListener('submit', function (e) {
+            formNuevo.addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 const tituloInput = document.getElementById('anuncioTitulo');
@@ -261,20 +309,28 @@
                     fechaExpiracion
                 };
 
-                const currentList = getAnuncios();
-                currentList.unshift(newAnuncio);
-                saveAnuncios(currentList);
-
-                // Reset form and close modal
-                formNuevo.reset();
-                const modalEl = document.getElementById('nuevoAnuncioModal');
-                if (modalEl && window.bootstrap && window.bootstrap.Modal) {
-                    const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
-                    modalObj.hide();
+                const submitBtn = formNuevo.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
                 }
 
-                renderAnuncios();
-                alert('¡Novedad publicada correctamente!');
+                try {
+                    await addAnuncio(newAnuncio);
+                    formNuevo.reset();
+                    const modalEl = document.getElementById('nuevoAnuncioModal');
+                    if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+                        const modalObj = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+                        modalObj.hide();
+                    }
+                    await renderAnuncios();
+                    alert('¡Novedad publicada correctamente!');
+                } catch (err) {
+                    alert('Error al publicar la novedad en la base de datos.');
+                } finally {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                    }
+                }
             });
         }
 
