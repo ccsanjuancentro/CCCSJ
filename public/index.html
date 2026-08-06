@@ -264,6 +264,19 @@
                 </div>
             </section>
 
+            <!-- Actividades de la Semana -->
+            <section class="py-5 bg-white border-top">
+                <div class="container">
+                    <div class="text-center mb-5">
+                        <h2 class="font-weight-bold text-dark" style="font-size: 32px;">Próximas Actividades</h2>
+                        <p class="text-muted mb-0" id="calendarRangeText" style="font-size: 16px; font-weight: 500;">Cronograma para los próximos 7 días</p>
+                    </div>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 justify-content-center" id="activitiesCalendarContainer">
+                        <!-- Generado dinámicamente por JS -->
+                    </div>
+                </div>
+            </section>
+
 
 <!-- Modal -->
 <div class="modal fade" id="prayerRequestModal" tabindex="-1" aria-labelledby="prayerRequestModalLabel" aria-hidden="true">
@@ -432,6 +445,84 @@
                     .catch(err => {
                         console.error("Error fetching latest sermon from YouTube RSS feed:", err);
                     });
+
+                // Generate Weekly Activities Calendar Dynamically
+                const calendarContainer = document.getElementById('activitiesCalendarContainer');
+                const rangeText = document.getElementById('calendarRangeText');
+                if (calendarContainer && rangeText) {
+                    const activitiesData = {
+                        0: [ // Domingo
+                            { title: "Reunión Dominical", time: "10:00 - 12:15 hs", badge: "Principal", badgeClass: "bg-danger", borderClass: "border-danger", desc: "Tiempo de alabanza, enseñanza y comunión." },
+                            { title: "Escuela Bíblica", time: "10:00 hs", badge: "Niños", badgeClass: "bg-primary", borderClass: "border-primary", desc: "Lecciones para niños de 4 a 11 años durante la reunión." }
+                        ],
+                        2: [ // Martes
+                            { title: "Corona de Honra", time: "18:00 hs", badge: "Adultos Mayores", badgeClass: "bg-secondary text-white", borderClass: "border-secondary", desc: "Talleres y comunión para adultos de 60 años en adelante." }
+                        ],
+                        3: [ // Miércoles
+                            { title: "Madres Unidas en Oración", time: "15:00 hs", badge: "Madres", badgeClass: "bg-warning text-dark", borderClass: "border-warning", desc: "Oración intercesora por la vida de nuestros hijos." },
+                            { title: "Grupo de Oración", time: "20:00 hs", badge: "Espiritual", badgeClass: "bg-info text-dark", borderClass: "border-info", desc: "Búsqueda del Señor y tiempo de intercesión comunitaria." }
+                        ],
+                        6: [ // Sábado
+                            { title: "Linaje Escogido", time: "18:00 - 20:15 hs", badge: "Adolescentes", badgeClass: "bg-info text-dark", borderClass: "border-info", desc: "Crecimiento y comunión para adolescentes de 12 a 17 años." },
+                            { title: "Jóvenes", time: "20:30 hs", badge: "Jóvenes", badgeClass: "bg-danger", borderClass: "border-danger", desc: "Reflexión, alabanza y amistad para jóvenes de 18 a 33 años." }
+                        ]
+                    };
+
+                    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+                    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+                    const today = new Date();
+                    const oneWeekLater = new Date();
+                    oneWeekLater.setDate(today.getDate() + 6);
+                    
+                    rangeText.textContent = `Cronograma desde hoy ${today.getDate()} de ${monthNames[today.getMonth()]} al ${oneWeekLater.getDate()} de ${monthNames[oneWeekLater.getMonth()]}`;
+
+                    let html = "";
+                    for (let i = 0; i < 7; i++) {
+                        const currentDate = new Date();
+                        currentDate.setDate(today.getDate() + i);
+                        const dayOfWeek = currentDate.getDay();
+                        const dayOfMonth = currentDate.getDate();
+                        const monthName = monthNames[currentDate.getMonth()];
+
+                        if (activitiesData[dayOfWeek]) {
+                            let dayLabel = dayNames[dayOfWeek];
+                            if (i === 0) dayLabel = "Hoy - " + dayLabel;
+                            else if (i === 1) dayLabel = "Mañana - " + dayLabel;
+
+                            const formattedDate = `${dayOfMonth} de ${monthName}`;
+                            
+                            let eventsHtml = "";
+                            activitiesData[dayOfWeek].forEach(event => {
+                                eventsHtml += `
+                                    <div class="p-3 bg-white rounded-3 border-start border-3 ${event.borderClass} shadow-sm d-flex flex-column mb-2">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge ${event.badgeClass} rounded-pill px-2 py-1 font-weight-bold text-uppercase" style="font-size: 9px; letter-spacing: 0.5px;">${event.badge}</span>
+                                            <span class="text-muted" style="font-size: 11px; font-weight: 600;"><i class="bi bi-clock-fill me-1"></i> ${event.time}</span>
+                                        </div>
+                                        <h5 class="text-dark mb-1" style="font-size: 16px; font-weight: 700;">${event.title}</h5>
+                                        <p class="text-muted mb-0" style="font-size: 13px; line-height: 1.4;">${event.desc}</p>
+                                    </div>
+                                `;
+                            });
+
+                            html += `
+                                <div class="col d-flex">
+                                    <div class="card w-100 border-0 rounded-4 shadow-sm p-4 d-flex flex-column card-hover-effect" style="background-color: #f8f9fa;">
+                                        <div class="border-bottom pb-2 mb-3">
+                                            <span class="text-primary font-weight-bold d-block text-uppercase" style="font-size: 12px; letter-spacing: 0.5px;">${dayLabel}</span>
+                                            <h4 class="text-dark mb-0" style="font-size: 20px; font-weight: 700;">${formattedDate}</h4>
+                                        </div>
+                                        <div class="d-flex flex-column gap-2">
+                                            ${eventsHtml}
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                    calendarContainer.innerHTML = html;
+                }
             });
         </script>
         
