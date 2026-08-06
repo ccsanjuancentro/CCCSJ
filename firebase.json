@@ -1,7 +1,6 @@
 {
   "hosting": {
     "public": "public",
-    "site": "iglesiaccsj",
     "ignore": [
       "firebase.json",
       "**/.*",
