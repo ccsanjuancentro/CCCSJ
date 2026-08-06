@@ -1192,3 +1192,599 @@ button:focus:not(:focus-visible) {
   }
 }
 
+/*---------------------------------------
+  ACTION CARDS (Sermons & Prayer)
+-----------------------------------------*/
+.action-card {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: linear-gradient(to bottom, #ffffff, #fdfdfd);
+  border-radius: 20px !important;
+}
+
+.action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12) !important;
+}
+
+.latest-sermon-preview a {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.latest-sermon-preview img {
+  transition: transform 0.5s ease;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.latest-sermon-preview a:hover img {
+  transform: scale(1.06);
+}
+
+.latest-sermon-preview .play-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.latest-sermon-preview a:hover .play-overlay {
+  opacity: 1;
+}
+
+.play-btn-circle {
+  width: 50px;
+  height: 50px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.latest-sermon-preview a:hover .play-btn-circle {
+  transform: scale(1.1);
+}
+
+.prayer-preview {
+  background: linear-gradient(135deg, #1b3d54 0%, #3a2e5c 100%);
+  min-height: 175px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Accent badges */
+.bg-danger-subtle {
+  background-color: rgba(220, 53, 69, 0.12) !important;
+}
+.bg-primary-subtle {
+  background-color: rgba(13, 110, 253, 0.12) !important;
+}
+
+/* Conecta Page Pills Redesign */
+.conecta-pill {
+  width: 100%;
+  text-align: left !important;
+  padding: 14px 20px !important;
+  margin-bottom: 12px;
+  border-radius: 14px !important;
+  background-color: #fdfdfd;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  color: #444444 !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.conecta-pill i {
+  font-size: 18px;
+  margin-right: 12px;
+  color: #777777;
+  transition: all 0.3s ease;
+}
+
+.conecta-pill:hover {
+  background-color: #f3f5f8;
+  color: var(--primary-color) !important;
+  transform: translateX(6px);
+  border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.conecta-pill:hover i {
+  color: var(--primary-color);
+}
+
+.conecta-pill.active {
+  background: linear-gradient(135deg, var(--primary-color) 0%, #ff6e2d 100%) !important;
+  color: white !important;
+  box-shadow: 0 8px 20px rgba(255, 68, 0, 0.22);
+  border-color: transparent !important;
+}
+
+.conecta-pill.active i {
+  color: white !important;
+}
+
+/* Conecta Page Navigation Scroll Wrapper */
+.conecta-tabs-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.conecta-tabs-scroll {
+  max-height: 420px;
+  width: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding: 4px;
+  /* Hide scrollbars */
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.conecta-tabs-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
+/* Stylized Scroll Buttons */
+.conecta-scroll-btn {
+  background: #f0f3f8;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+  margin: 6px 0;
+  color: var(--primary-color);
+}
+
+.conecta-scroll-btn:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border-color: transparent;
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(255, 68, 0, 0.2);
+}
+
+.conecta-scroll-btn:active {
+  transform: scale(0.95);
+}
+
+.conecta-scroll-btn i {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Church Card Redesign - Horizontal & Compact */
+.church-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  height: 100%;
+  display: flex;
+  flex-direction: row; /* Image on left, content on right */
+  align-items: center;
+  padding: 20px;
+}
+
+.church-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.church-img-wrapper {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.church-card:hover .church-img-wrapper {
+  border-color: var(--primary-color);
+}
+
+.church-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Never crops the logo */
+  padding: 6px;
+  transition: transform 0.5s ease;
+}
+
+.church-card:hover .church-img-wrapper img {
+  transform: scale(1.05);
+}
+
+.church-card-body {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  min-width: 0; /* Prevents text overflow */
+}
+
+.church-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1b3d54;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.church-card-title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.church-card-title a:hover {
+  color: var(--primary-color);
+}
+
+.church-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+
+.church-info-item {
+  font-size: 13px;
+  color: #666666;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.4;
+}
+
+.church-info-item:last-child {
+  margin-bottom: 0;
+}
+
+.church-info-item i {
+  color: var(--primary-color);
+  margin-right: 8px;
+  font-size: 12px;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.church-card-footer {
+  margin-top: 5px;
+  border-top: none;
+  padding-top: 0;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  align-items: center;
+}
+
+.church-action-btn {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--primary-color) !important;
+  background-color: transparent;
+  padding: 0;
+  border: none;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: none;
+}
+
+.church-action-btn:hover {
+  color: #ff6e2d !important;
+  transform: translateX(2px);
+}
+
+.church-action-btn i {
+  margin-right: 4px;
+  font-size: 10.5px;
+}
+
+.church-location-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f0f3f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary-color) !important;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 11px;
+}
+
+.church-location-btn:hover {
+  background: var(--primary-color);
+  color: #ffffff !important;
+  transform: scale(1.05);
+}
+
+/* Brazos Abiertos Foundation Section Styling */
+.foundation-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #f7f9fc 0%, #ffffff 100%);
+  border-top: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.foundation-img {
+  border-radius: 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.foundation-img:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+}
+
+.foundation-content {
+  padding: 30px;
+}
+
+.foundation-subtitle {
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.foundation-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1b3d54;
+  margin-bottom: 20px;
+  line-height: 1.25;
+}
+
+.foundation-title span {
+  color: var(--primary-color);
+}
+
+.foundation-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #5b6e7f;
+  margin-bottom: 28px;
+}
+
+.foundation-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #25d366; /* WhatsApp Brand Color */
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 28px;
+  border-radius: 30px;
+  text-decoration: none;
+  box-shadow: 0 6px 15px rgba(37, 211, 102, 0.25);
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.foundation-btn:hover {
+  background-color: #20ba59;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+  color: #ffffff !important;
+}
+
+/* About and Schedule Combined Section */
+.about-schedule-section {
+  padding: 80px 0;
+  background: linear-gradient(180deg, #f8f9fc 0%, #ffffff 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.about-intro-card {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 50px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.about-tag {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.about-title {
+  font-size: 34px;
+  font-weight: 800;
+  color: #1b3d54;
+}
+
+.about-lead-text {
+  font-size: 21px;
+  line-height: 1.7;
+  color: #1b3d54;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+.about-divider {
+  width: 60px;
+  height: 3px;
+  background: var(--primary-color);
+  margin: 0 auto 24px auto;
+  border-radius: 2px;
+}
+
+.about-body-text {
+  font-size: 17px;
+  line-height: 1.8;
+  color: #333333;
+}
+
+.bible-ref {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.map-container {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  height: 100%;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-container iframe {
+  height: 100% !important;
+  flex-grow: 1;
+}
+
+.schedule-info-wrapper {
+  padding: 20px;
+}
+
+.info-item-card {
+  display: flex;
+  align-items: center;
+  background: #f8fafe;
+  border-radius: 16px;
+  padding: 18px 24px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease;
+}
+
+.info-item-card:hover {
+  transform: translateX(5px);
+  background: #ffffff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border-color: rgba(255, 68, 0, 0.15);
+}
+
+.info-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: rgba(255, 68, 0, 0.08);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-right: 20px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.info-item-card:hover .info-icon-box {
+  background: var(--primary-color);
+  color: #ffffff;
+}
+
+.info-text-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #8898a8;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+.info-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1b3d54;
+  margin: 0;
+}
+
+.social-channels-card {
+  margin-top: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: left;
+}
+
+.social-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1b3d54;
+  margin-bottom: 15px;
+  letter-spacing: 0.5px;
+}
+
+.social-btn-link {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  color: #ffffff !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.social-btn-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.social-fb {
+  background: #1877f2;
+}
+
+.social-yt {
+  background: #ff0000;
+}
+
+.social-ig {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
