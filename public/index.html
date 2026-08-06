@@ -33,6 +33,7 @@
         <link href="css/tooplate-little-fashion.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
         <script type="module" src="js/firebase-events.js"></script>
@@ -448,12 +449,60 @@
     </div>
 </div>
 
+<!-- Modal Nuevo Evento -->
+<div class="modal fade" id="nuevoEventoModal" tabindex="-1" aria-labelledby="nuevoEventoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+            <div class="modal-header bg-success text-white border-0" style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
+                <h5 class="modal-title font-weight-bold text-white" id="nuevoEventoModalLabel"><i class="bi bi-calendar-event-fill me-2"></i> Crear Nuevo Evento</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formNuevoEvento">
+                    <div class="mb-3">
+                        <label for="eventoNombre" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Nombre del Evento</label>
+                        <input type="text" class="form-control py-2" id="eventoNombre" placeholder="Ej: Retiro de Jóvenes" required style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventoDescripcion" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Descripción</label>
+                        <textarea class="form-control py-2" id="eventoDescripcion" rows="3" placeholder="Detalles o descripción del evento..." required style="border-radius: 8px;"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventoFecha" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Fecha y Hora</label>
+                        <input type="datetime-local" class="form-control py-2" id="eventoFecha" required style="border-radius: 8px;">
+                    </div>
+                    <div class="mb-3">
+                        <label for="eventoImagenFile" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Imagen del Evento</label>
+                        <input type="file" class="form-control py-2" id="eventoImagenFile" accept="image/*" style="border-radius: 8px;">
+                        <small class="text-muted" style="font-size: 11px;">Si no subís una imagen, se usará una por defecto.</small>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="eventoNoMostrarFecha">
+                        <label class="form-check-label text-muted font-weight-bold" for="eventoNoMostrarFecha" style="font-size: 14px;">
+                            Ocultar fecha y hora públicamente (solo mostrar nombre e imagen)
+                        </label>
+                    </div>
+                    <button type="submit" class="btn custom-btn w-100 py-3 mt-3 d-flex align-items-center justify-content-center">
+                        <i class="bi bi-calendar-plus-fill me-2"></i> Crear Evento
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
             <section class="featured-product section-padding" id="eventos-section" style="display: none;">
                 <div class="container">
                     <div class="row">
                         <div id="eventos-section-content">
-                            <div class="col-12 text-center">
+                            <div class="col-12 text-center position-relative">
                                 <h2 class="mb-5">Próximos Eventos</h2>
+                                <!-- Controles de Administrador -->
+                                <div id="adminEventosBar" class="d-flex align-items-center justify-content-center gap-2 mb-4" style="display: none !important;">
+                                    <button class="btn text-white btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" style="background-color: #20c997; border-color: #20c997;" data-bs-toggle="modal" data-bs-target="#nuevoEventoModal">
+                                        <i class="bi bi-plus-lg me-1"></i> Agregar Evento
+                                    </button>
+                                </div>
                             </div>
                             <div id="eventos-container" class="row">
                                 <!-- Los eventos serán insertados dinámicamente aquí -->

@@ -20,6 +20,12 @@
     const db = firebase.firestore();
     const storage = firebase.storage();
 
+    if (firebase.auth) {
+        firebase.auth().signInAnonymously().catch(err => {
+            console.error("Error al autenticar anónimamente en destacados.js:", err);
+        });
+    }
+
     let activePreviewList = [];
     let currentPreviewIndex = 0;
 

@@ -19,6 +19,12 @@
     }
     const db = firebase.firestore();
 
+    if (firebase.auth) {
+        firebase.auth().signInAnonymously().catch(err => {
+            console.error("Error al autenticar anónimamente en encuentros.js:", err);
+        });
+    }
+
     const DEFAULT_ENCUENTROS = [
         { id: 'fixed_domingo', title: 'Reunión Dominical', time: '10:00 hs', lugar: 'En la iglesia', dayOfWeek: 0, isRecurring: true, isFixedDefault: true, borderClass: 'border-danger' },
         { id: 'fixed_miercoles', title: 'Grupo de Oración', time: '20:00 hs', lugar: 'En la iglesia', dayOfWeek: 3, isRecurring: true, isFixedDefault: true, borderClass: 'border-info' },

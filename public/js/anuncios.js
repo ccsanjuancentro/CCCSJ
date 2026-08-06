@@ -19,6 +19,12 @@
     }
     const db = firebase.firestore();
 
+    if (firebase.auth) {
+        firebase.auth().signInAnonymously().catch(err => {
+            console.error("Error al autenticar anónimamente en anuncios.js:", err);
+        });
+    }
+
     // Smart date normalizer: handles DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD
     function normalizeDateYYYYMMDD(dateStr) {
         if (!dateStr) return '';
