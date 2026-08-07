@@ -18,18 +18,42 @@
         firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
-    const storage = firebase.storage();
+    
+    // Supabase Configuration
+    const SUPABASE_URL = "https://xgwlzndirvqzmaikdzzi.supabase.co";
+    const SUPABASE_KEY = "sb_secret_f4_ho1Wm63F31-7_X1PMcg_7rXrfynR";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    if (firebase.auth) {
-        firebase.auth().signInAnonymously().catch(err => {
-            console.error("Error al autenticar anónimamente en destacados.js:", err);
+    let authPromise = null;
+    function ensureAuthenticated() {
+        if (!firebase.auth) return Promise.resolve();
+        if (authPromise) return authPromise;
+
+        authPromise = new Promise((resolve) => {
+            const auth = firebase.auth();
+            if (auth.currentUser) {
+                resolve(auth.currentUser);
+                return;
+            }
+            const unsubscribe = auth.onAuthStateChanged((user) => {
+                if (user) {
+                    unsubscribe();
+                    resolve(user);
+                }
+            });
+            auth.signInAnonymously().catch(err => {
+                console.error("Error al autenticar anónimamente en destacados.js:", err);
+                resolve(null);
+            });
         });
+        return authPromise;
     }
 
     let activePreviewList = [];
     let currentPreviewIndex = 0;
 
     async function getDestacadosAsync() {
+        await ensureAuthenticated();
         try {
             const snapshot = await db.collection('destacados').get();
             const list = [];
@@ -50,15 +74,28 @@
     }
 
     async function uploadDestacadoAsync(file, fechaExpiracion) {
+        await ensureAuthenticated();
         try {
             const id = Date.now().toString();
             const extension = file.name.split('.').pop();
             const storagePath = `destacados/${id}.${extension}`;
-            const storageRef = storage.ref().child(storagePath);
 
-            // Subir archivo a Storage
-            const uploadTask = await storageRef.put(file);
-            const fileUrl = await uploadTask.ref.getDownloadURL();
+            // Subir archivo a Supabase Storage
+            const { data, error } = await supabaseClient.storage
+                .from('CCCSJ')
+                .upload(storagePath, file, {
+                    cacheControl: '3600',
+                    upsert: true
+                });
+
+            if (error) throw error;
+
+            // Obtener URL pública
+            const { data: publicUrlData } = supabaseClient.storage
+                .from('CCCSJ')
+                .getPublicUrl(storagePath);
+
+            const fileUrl = publicUrlData.publicUrl;
 
             // Guardar metadatos en Firestore
             await db.collection('destacados').doc(id).set({
@@ -68,20 +105,28 @@
                 fechaCreado: Date.now()
             });
         } catch (e) {
-            console.error("Error al subir destacado a Firebase:", e);
+            console.error("Error al subir destacado a Supabase:", e);
             throw e;
         }
     }
 
     async function deleteDestacadoAsync(id, fileUrl) {
+        await ensureAuthenticated();
         try {
-            // Eliminar de Storage
+            // Eliminar de Supabase Storage
             if (fileUrl) {
                 try {
-                    const storageRef = storage.refFromURL(fileUrl);
-                    await storageRef.delete();
+                    const marker = '/public/CCCSJ/';
+                    const markerIdx = fileUrl.indexOf(marker);
+                    if (markerIdx !== -1) {
+                        const storagePath = fileUrl.substring(markerIdx + marker.length);
+                        const { error } = await supabaseClient.storage
+                            .from('CCCSJ')
+                            .remove([storagePath]);
+                        if (error) console.warn("Error al borrar en Supabase Storage:", error);
+                    }
                 } catch (err) {
-                    console.warn("No se pudo eliminar el archivo de Storage:", err);
+                    console.warn("No se pudo eliminar el archivo de Supabase Storage:", err);
                 }
             }
             // Eliminar de Firestore

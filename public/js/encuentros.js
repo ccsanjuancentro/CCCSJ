@@ -19,10 +19,29 @@
     }
     const db = firebase.firestore();
 
-    if (firebase.auth) {
-        firebase.auth().signInAnonymously().catch(err => {
-            console.error("Error al autenticar anónimamente en encuentros.js:", err);
+    let authPromise = null;
+    function ensureAuthenticated() {
+        if (!firebase.auth) return Promise.resolve();
+        if (authPromise) return authPromise;
+
+        authPromise = new Promise((resolve) => {
+            const auth = firebase.auth();
+            if (auth.currentUser) {
+                resolve(auth.currentUser);
+                return;
+            }
+            const unsubscribe = auth.onAuthStateChanged((user) => {
+                if (user) {
+                    unsubscribe();
+                    resolve(user);
+                }
+            });
+            auth.signInAnonymously().catch(err => {
+                console.error("Error al autenticar anónimamente en encuentros.js:", err);
+                resolve(null);
+            });
         });
+        return authPromise;
     }
 
     const DEFAULT_ENCUENTROS = [
@@ -37,6 +56,7 @@
     }
 
     async function getEncuentros() {
+        await ensureAuthenticated();
         try {
             const snapshot = await db.collection('encuentros').get();
             const list = [];
@@ -62,6 +82,7 @@
     }
 
     async function getOverrides() {
+        await ensureAuthenticated();
         try {
             const snapshot = await db.collection('encuentros_overrides').get();
             const list = [];
@@ -79,6 +100,7 @@
     }
 
     async function saveEncuentros(list) {
+        await ensureAuthenticated();
         try {
             const snapshot = await db.collection('encuentros').get();
             const existingIds = [];
@@ -96,10 +118,12 @@
             }
         } catch (e) {
             console.error("Error al guardar encuentros en Firestore:", e);
+            throw e;
         }
     }
 
     async function saveOverrides(list) {
+        await ensureAuthenticated();
         try {
             const snapshot = await db.collection('encuentros_overrides').get();
             const existingIds = [];
@@ -125,6 +149,7 @@
             }
         } catch (e) {
             console.error("Error al guardar overrides en Firestore:", e);
+            throw e;
         }
     }
 
