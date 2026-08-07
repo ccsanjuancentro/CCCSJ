@@ -670,15 +670,44 @@
                         <input type="text" class="form-control py-2" id="encuentroTitle" placeholder="e.g. Teens, Youth, Special Event..." required style="border-radius: 8px;">
                     </div>
                     <div class="mb-3">
-                        <label for="encuentroTime" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Time</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-clock-fill text-primary"></i></span>
-                            <input type="text" class="form-control py-2 border-start-0" id="encuentroTime" placeholder="e.g. 19:00" required style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        <label class="form-label text-muted font-weight-bold" style="font-size: 14px;">Time</label>
+                        <div class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-center gap-3">
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Hour</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="encuentroHoraInput" min="0" max="23" value="19" style="width: 75px; border-radius: 8px;">
+                            </div>
+                            <span class="fs-3 fw-bold text-muted mt-3">:</span>
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Minutes</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="encuentroMinInput" min="0" max="59" step="5" value="00" style="width: 75px; border-radius: 8px;">
+                            </div>
+                        </div>
+                        <input type="hidden" id="encuentroTime" required>
+                    </div>
+                    <!-- Lugar con checkbox -->
+                    <div class="mb-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="encuentroEnIglesia" checked>
+                            <label class="form-check-label text-muted font-weight-bold" for="encuentroEnIglesia" style="font-size: 14px;">
+                                <i class="bi bi-building me-1"></i> At church
+                            </label>
+                        </div>
+                        <div id="containerEncuentroLugar" style="display: none;">
+                            <input type="text" class="form-control py-2" id="encuentroLugar" placeholder="Specify location..." style="border-radius: 8px;">
                         </div>
                     </div>
+                    <!-- Contacto con checkbox -->
                     <div class="mb-3">
-                        <label for="encuentroLugar" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Location (Optional)</label>
-                        <input type="text" class="form-control py-2" id="encuentroLugar" placeholder="En la iglesia" style="border-radius: 8px;">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="encuentroTieneContacto">
+                            <label class="form-check-label text-muted font-weight-bold" for="encuentroTieneContacto" style="font-size: 14px;">
+                                <i class="bi bi-telephone-fill me-1"></i> Add contact number
+                            </label>
+                        </div>
+                        <div id="containerEncuentroContacto" style="display: none;">
+                            <input type="tel" class="form-control py-2" id="encuentroContacto" placeholder="e.g. 1123456789" maxlength="12" style="border-radius: 8px;" inputmode="numeric" pattern="[0-9]*">
+                            <small class="text-muted" style="font-size: 11px;">Max 12 digits. Numbers only.</small>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="encuentroTipoRepeticion" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Frequency / Type</label>
@@ -763,15 +792,44 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="editEncuentroTime" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Time</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-clock-fill text-primary"></i></span>
-                            <input type="text" class="form-control py-2 border-start-0" id="editEncuentroTime" placeholder="e.g. 19:00" required style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        <label class="form-label text-muted font-weight-bold" style="font-size: 14px;">Time</label>
+                        <div class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-center gap-3">
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Hour</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="editHoraInput" min="0" max="23" value="19" style="width: 75px; border-radius: 8px;">
+                            </div>
+                            <span class="fs-3 fw-bold text-muted mt-3">:</span>
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Minutes</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="editMinInput" min="0" max="59" step="5" value="00" style="width: 75px; border-radius: 8px;">
+                            </div>
+                        </div>
+                        <input type="hidden" id="editEncuentroTime" required>
+                    </div>
+                    <!-- Lugar con checkbox -->
+                    <div class="mb-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="editEncuentroEnIglesia" checked>
+                            <label class="form-check-label text-muted font-weight-bold" for="editEncuentroEnIglesia" style="font-size: 14px;">
+                                <i class="bi bi-building me-1"></i> At church
+                            </label>
+                        </div>
+                        <div id="containerEditLugar" style="display: none;">
+                            <input type="text" class="form-control py-2" id="editEncuentroLugar" placeholder="Specify location..." style="border-radius: 8px;">
                         </div>
                     </div>
+                    <!-- Contacto con checkbox -->
                     <div class="mb-3">
-                        <label for="editEncuentroLugar" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Location</label>
-                        <input type="text" class="form-control py-2" id="editEncuentroLugar" style="border-radius: 8px;">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="editEncuentroTieneContacto">
+                            <label class="form-check-label text-muted font-weight-bold" for="editEncuentroTieneContacto" style="font-size: 14px;">
+                                <i class="bi bi-telephone-fill me-1"></i> Contact
+                            </label>
+                        </div>
+                        <div id="containerEditContacto" style="display: none;">
+                            <input type="tel" class="form-control py-2" id="editEncuentroContacto" placeholder="e.g. 1123456789" maxlength="12" style="border-radius: 8px;" inputmode="numeric" pattern="[0-9]*">
+                            <small class="text-muted" style="font-size: 11px;">Max 12 digits. Numbers only.</small>
+                        </div>
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top justify-content-between align-items-center">

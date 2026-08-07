@@ -705,14 +705,14 @@
 
                 try {
                     if (item.isRecurring) {
-                        if (confirm('¿Querés cancelar esta reunión solo para este día (en rojo) o eliminar la regla semanal por completo?\n\n[OK] = Cancelar solo para este día (se verá en rojo)\n[Cancelar] = Eliminar encuentro semanal permanentemente')) {
+                        if (confirm('¿Deseás eliminar el encuentro semanal por completo o solo cancelar la reunión de este día?\n\n[OK] = Eliminar encuentro semanal permanentemente\n[Cancelar] = Cancelar solo para este día (se verá en rojo)')) {
+                            const updated = list.filter(e => e.id !== id);
+                            await saveEncuentros(updated);
+                        } else {
                             const overrides = await getOverrides();
                             const filtered = overrides.filter(o => !(o.encuentroId === id && o.fecha === targetIso));
                             filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
                             await saveOverrides(filtered);
-                        } else {
-                            const updated = list.filter(e => e.id !== id);
-                            await saveEncuentros(updated);
                         }
                     } else {
                         if (confirm('¿Estás seguro de eliminar este encuentro?')) {
@@ -866,6 +866,7 @@
                                 title: newTitle,
                                 time: newTime,
                                 lugar: newLugar,
+                                contacto: newContacto,
                                 fecha: newIsoFecha,
                                 dayOfWeek: dObj.getDay(),
                                 isRecurring: false,
