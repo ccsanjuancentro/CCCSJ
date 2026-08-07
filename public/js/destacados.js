@@ -266,10 +266,12 @@
         const validList = rawList.filter(item => isDestacadoValid(item.fechaExpiracion));
         activePreviewList = validList;
 
-        // Purge expired items permanently
-        for (const item of rawList) {
-            if (!isDestacadoValid(item.fechaExpiracion)) {
-                await deleteDestacadoAsync(item.id, item.fileUrl).catch(() => {});
+        // Purge expired items permanently ONLY when admin is logged in
+        if (isAdmin) {
+            for (const item of rawList) {
+                if (!isDestacadoValid(item.fechaExpiracion)) {
+                    await deleteDestacadoAsync(item.id, item.fileUrl).catch(() => {});
+                }
             }
         }
 
@@ -482,7 +484,8 @@
                     alert(`¡Destacado publicado con éxito! Estará visible hasta el ${dateDMY}.`);
                 } catch (err) {
                     console.error('Error saving to Supabase:', err);
-                    alert('Ocurrió un error al subir el archivo.');
+                    const msg = (err && err.message) ? err.message : 'Ocurrió un error al subir el archivo.';
+                    alert(`Error al subir el destacado: ${msg}`);
                 } finally {
                     if (submitBtn) {
                         submitBtn.disabled = false;
