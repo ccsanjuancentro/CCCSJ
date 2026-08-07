@@ -498,7 +498,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="espacio_grupo" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Selecciona un espacio de conexión</label>
-                                    <select class="form-select py-2" id="espacio_grupo" name="espacio_grupo" required style="border-radius: 8px;">
+                                    <select class="form-select py-2" id="espacio_grupo" name="church" required style="border-radius: 8px;">
                                         <option value="">Selecciona...</option>
                                         <option value="Reunión Dominical">Reunión Dominical</option>
                                         <option value="Grupo de Oración">Grupo de Oración</option>
@@ -874,7 +874,7 @@
                                 <div class="mb-3">
                                     <label for="ministrySelectDisplay" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Ministerio</label>
                                     <input type="text" class="form-control py-2 bg-light fw-bold text-primary" id="ministrySelectDisplay" readonly style="border-radius: 8px;">
-                                    <input type="hidden" id="ministrySelect" name="ministerio">
+                                    <input type="hidden" id="ministrySelect" name="church">
                                 </div>
                                 <button type="submit" class="btn custom-btn w-100 py-3 mt-4 d-flex align-items-center justify-content-center">
                                     <i class="bi bi-heart-fill me-2"></i> Enviar Postulación
@@ -958,17 +958,8 @@
         
             document.getElementById('churchSelectionForm').addEventListener('submit', function(event) {
                 event.preventDefault();
-                
-                var templateParams = {
-                    name: document.getElementById('name').value,
-                    phone: document.getElementById('phone').value,
-                    tipo_solicitud: 'conectar',
-                    label_campo: 'Grupo / Espacio:',
-                    valor_campo: document.getElementById('espacio_grupo').value,
-                    church: document.getElementById('espacio_grupo').value // Para compatibilidad con plantillas anteriores
-                };
         
-                emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
+                emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
                     .then(function(response) {
                         Swal.fire({
                             icon: 'success',
@@ -981,6 +972,7 @@
                             document.getElementById('churchSelectionForm').reset();
                         });
                     }, function(error) {
+                        console.error('EmailJS Error:', error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -1008,16 +1000,7 @@
                 serveForm.addEventListener('submit', function(event) {
                     event.preventDefault();
             
-                    var templateParams = {
-                        name: document.getElementById('serveName').value,
-                        phone: document.getElementById('servePhone').value,
-                        tipo_solicitud: 'servir',
-                        label_campo: 'Ministerio:',
-                        valor_campo: document.getElementById('ministrySelect').value,
-                        church: document.getElementById('ministrySelect').value // Para compatibilidad con plantillas anteriores
-                    };
-
-                    emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
+                    emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
                         .then(function(response) {
                             Swal.fire({
                                 icon: 'success',
@@ -1032,6 +1015,7 @@
                                 serveForm.reset();
                             });
                         }, function(error) {
+                            console.error('EmailJS Error:', error);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',

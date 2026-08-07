@@ -490,6 +490,7 @@
                         </div>
                         <div class="modal-body p-4">
                             <form id="churchSelectionForm">
+                                <input type="hidden" name="tipo_solicitud" value="Conectar">
                                 <div class="mb-3">
                                     <label for="name" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Full name</label>
                                     <input type="text" class="form-control py-2" id="name" name="name" placeholder="Your name" required style="border-radius: 8px;">
@@ -500,7 +501,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="espacio_grupo" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Select a connection space</label>
-                                    <select class="form-select py-2" id="espacio_grupo" name="espacio_grupo" required style="border-radius: 8px;">
+                                    <select class="form-select py-2" id="espacio_grupo" name="church" required style="border-radius: 8px;">
                                         <option value="">Select...</option>
                                         <option value="Reunión Dominical">Sunday Service</option>
                                         <option value="Grupo de Oración">Prayer Meeting</option>
@@ -864,6 +865,7 @@
                         </div>
                         <div class="modal-body p-4">
                             <form id="serveSelectionForm">
+                                <input type="hidden" name="tipo_solicitud" value="Servir">
                                 <div class="mb-3">
                                     <label for="serveName" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Full name</label>
                                     <input type="text" class="form-control py-2" id="serveName" name="name" placeholder="Your name" required style="border-radius: 8px;">
@@ -960,16 +962,7 @@
             document.getElementById('churchSelectionForm').addEventListener('submit', function(event) {
                 event.preventDefault();
         
-                var templateParams = {
-                    name: document.getElementById('name').value,
-                    phone: document.getElementById('phone').value,
-                    tipo_solicitud: 'conectar',
-                    label_campo: 'Grupo / Espacio:',
-                    valor_campo: document.getElementById('espacio_grupo').value,
-                    church: document.getElementById('espacio_grupo').value
-                };
-
-                emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
+                emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
                     .then(function(response) {
                         Swal.fire({
                             icon: 'success',
@@ -982,6 +975,7 @@
                             document.getElementById('churchSelectionForm').reset();
                         });
                     }, function(error) {
+                        console.error('EmailJS Error:', error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -1009,16 +1003,7 @@
                 serveForm.addEventListener('submit', function(event) {
                     event.preventDefault();
             
-                    var templateParams = {
-                        name: document.getElementById('serveName').value,
-                        phone: document.getElementById('servePhone').value,
-                        tipo_solicitud: 'servir',
-                        label_campo: 'Ministry:',
-                        valor_campo: document.getElementById('ministrySelect').value,
-                        church: document.getElementById('ministrySelect').value
-                    };
-
-                    emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
+                    emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
                         .then(function(response) {
                             Swal.fire({
                                 icon: 'success',
@@ -1033,6 +1018,7 @@
                                 serveForm.reset();
                             });
                         }, function(error) {
+                            console.error('EmailJS Error:', error);
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
