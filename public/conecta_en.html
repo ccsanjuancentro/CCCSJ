@@ -499,8 +499,8 @@
                                     <input type="tel" class="form-control py-2" id="phone" name="phone" placeholder="e.g. 264 1234567" required style="border-radius: 8px;">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="church" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Select a connection space</label>
-                                    <select class="form-select py-2" id="church" name="church" required style="border-radius: 8px;">
+                                    <label for="espacio_grupo" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Select a connection space</label>
+                                    <select class="form-select py-2" id="espacio_grupo" name="espacio_grupo" required style="border-radius: 8px;">
                                         <option value="">Select...</option>
                                         <option value="Reunión Dominical">Sunday Service</option>
                                         <option value="Grupo de Oración">Prayer Meeting</option>
@@ -960,25 +960,34 @@
             document.getElementById('churchSelectionForm').addEventListener('submit', function(event) {
                 event.preventDefault();
         
-                emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
+                var templateParams = {
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    tipo_solicitud: 'conectar',
+                    label_campo: 'Grupo / Espacio:',
+                    valor_campo: document.getElementById('espacio_grupo').value,
+                    church: document.getElementById('espacio_grupo').value
+                };
+
+                emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
                     .then(function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Message sent successfully.',
-                    text: 'We will contact you shortly, Blessings!',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
-                    modal.hide();
-                    document.getElementById('churchSelectionForm').reset();
-                });
-            }, function(error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred. Please try again.'
-                });
-            });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Message sent successfully.',
+                            text: 'We will contact you shortly, Blessings!',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
+                            if (modal) modal.hide();
+                            document.getElementById('churchSelectionForm').reset();
+                        });
+                    }, function(error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred. Please try again.'
+                        });
+                    });
             });
 
             // Handle pre-selection of ministry in serveRequestModal
@@ -1000,7 +1009,16 @@
                 serveForm.addEventListener('submit', function(event) {
                     event.preventDefault();
             
-                    emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
+                    var templateParams = {
+                        name: document.getElementById('serveName').value,
+                        phone: document.getElementById('servePhone').value,
+                        tipo_solicitud: 'servir',
+                        label_campo: 'Ministry:',
+                        valor_campo: document.getElementById('ministrySelect').value,
+                        church: document.getElementById('ministrySelect').value
+                    };
+
+                    emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
                         .then(function(response) {
                             Swal.fire({
                                 icon: 'success',

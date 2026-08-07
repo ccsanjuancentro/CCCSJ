@@ -521,29 +521,36 @@ h1 {
         
             // Manejar el envío del formulario
             document.getElementById('churchSelectionForm').addEventListener('submit', function(event) {
-                event.preventDefault(); // Previene el envío del formulario de la manera predeterminada
+                event.preventDefault();
         
-                emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
+                var templateParams = {
+                    name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    tipo_solicitud: 'conectar con una iglesia',
+                    label_campo: 'Iglesia / Sede:',
+                    valor_campo: document.getElementById('church').value,
+                    church: document.getElementById('church').value
+                };
+
+                emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
                 .then(function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Mensaje enviado exitosamente.',
-                    text: 'En breve nos contactaremos contigo. ¡Bendiciones!',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Cierra el modal
-                    var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
-                    modal.hide();
-                    // Limpia el formulario
-                    document.getElementById('churchSelectionForm').reset();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Mensaje enviado exitosamente.',
+                        text: 'En breve nos contactaremos contigo. ¡Bendiciones!',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('prayerRequestModal'));
+                        if (modal) modal.hide();
+                        document.getElementById('churchSelectionForm').reset();
+                    });
+                }, function(error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Ocurrió un error. Intenta nuevamente.'
+                    });
                 });
-            }, function(error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Ocurrió un error. Intenta nuevamente.'
-                });
-            });
             });
         </script>
         <!-- JAVASCRIPT FILES -->
