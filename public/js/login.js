@@ -20,11 +20,11 @@ if (localStorage.getItem('isAdminLoggedIn') === 'true') {
     const sessionMessage = document.getElementById('sessionMessage');
     if (sessionMessage) {
         sessionMessage.style.display = 'block';
-        sessionMessage.innerText = 'Sesión activa como Administrador (cccsj). Redirigiendo...';
+        sessionMessage.innerText = 'Sesión activa como Administrador (cccsj). Redirigiendo al panel...';
     }
     setTimeout(() => {
-        window.location.href = "index.html#anuncios-section";
-    }, 1200);
+        window.location.href = "index.html";
+    }, 1000);
 }
 
 // Observador de autenticación Firebase
@@ -37,8 +37,8 @@ if (typeof firebase !== 'undefined' && firebase.auth) {
                 sessionMessage.style.display = 'block';
             }
             setTimeout(() => {
-                window.location.href = "index.html#anuncios-section";
-            }, 1500);
+                window.location.href = "index.html";
+            }, 1000);
         }
     });
 }
@@ -53,7 +53,7 @@ function signInUser(username, password) {
         localStorage.setItem('isAdminLoggedIn', 'true');
         localStorage.setItem('adminUser', 'cccsj');
         alert('¡Inicio de sesión correcto como Administrador cccsj!');
-        window.location.href = "index.html#anuncios-section";
+        window.location.href = "index.html";
         return;
     }
 
@@ -64,7 +64,7 @@ function signInUser(username, password) {
                 localStorage.setItem('isAdminLoggedIn', 'true');
                 localStorage.setItem('adminUser', userCredential.user.email);
                 alert('Inicio de sesión correcto.');
-                window.location.href = "index.html#anuncios-section";
+                window.location.href = "index.html";
             })
             .catch((error) => {
                 alert('Usuario o contraseña incorrectos. (Para acceso directo usá el usuario: cccsj y la contraseña asignada)');
