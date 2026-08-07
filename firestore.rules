@@ -3,23 +3,23 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /anuncios/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if true;
     }
     match /destacados/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if true;
     }
     match /encuentros/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if true;
     }
     match /encuentros_overrides/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if true;
     }
     match /eventos/{document} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if true;
     }
   }
 }

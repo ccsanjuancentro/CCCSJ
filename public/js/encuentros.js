@@ -280,7 +280,11 @@
                 let eventsHtml = "";
                 dayEvents.forEach(event => {
                     const bClass = event.borderClass || getBorderClass(event.title);
-                    const lugarHTML = (event.lugar && event.lugar !== 'En la iglesia') ? `<span class="text-muted small" style="font-size: 10px;"><i class="bi bi-geo-alt-fill me-1"></i>${event.lugar}</span>` : '';
+                    const lugarTexto = (!event.lugar || event.lugar === 'En la iglesia') ? 'Iglesia' : event.lugar;
+                    const lugarHTML = `<span class="text-muted small" style="font-size: 10px;"><i class="bi bi-geo-alt-fill me-1"></i>${lugarTexto}</span>`;
+                    const contactoHTML = event.contacto
+                        ? `<span class="text-muted small" style="font-size: 10px;"><i class="bi bi-telephone-fill me-1 text-success"></i>Info: ${event.contacto}</span>`
+                        : '';
                     
                     const adminActionButtons = isAdmin ? `
                         <div class="mt-1 pt-1 border-top d-flex gap-1 justify-content-end">
@@ -311,6 +315,7 @@
                                 </div>
                                 <span class="text-muted" style="font-size: 10.5px; font-weight: 600;"><i class="bi bi-clock-fill me-1 text-primary"></i>${event.time}</span>
                                 ${lugarHTML}
+                                ${contactoHTML}
                                 ${adminActionButtons}
                             </div>
                         `;
@@ -448,8 +453,34 @@
         document.getElementById('editEncuentroId').value = event.id;
         document.getElementById('editEncuentroTargetIso').value = targetIso || '';
         document.getElementById('editEncuentroTitle').value = event.title;
-        document.getElementById('editEncuentroTime').value = event.time;
-        document.getElementById('editEncuentroLugar').value = event.lugar || 'En la iglesia';
+
+        // Populate time inputs
+        const currentTime = event.time || '19:00';
+        const timeParts = currentTime.split(':');
+        const horaInp = document.getElementById('editHoraInput');
+        const minInp = document.getElementById('editMinInput');
+        const timeHidden = document.getElementById('editEncuentroTime');
+        if (horaInp) horaInp.value = parseInt(timeParts[0] || 19, 10);
+        if (minInp) minInp.value = String(timeParts[1] || '00').padStart(2, '0');
+        if (timeHidden) timeHidden.value = currentTime;
+
+        // Populate lugar checkbox
+        const enIglesiaEdit = document.getElementById('editEncuentroEnIglesia');
+        const containerEditLugar = document.getElementById('containerEditLugar');
+        const lugarEditInput = document.getElementById('editEncuentroLugar');
+        const isEnIglesia = !event.lugar || event.lugar === 'En la iglesia';
+        if (enIglesiaEdit) enIglesiaEdit.checked = isEnIglesia;
+        if (containerEditLugar) containerEditLugar.style.display = isEnIglesia ? 'none' : 'block';
+        if (lugarEditInput) lugarEditInput.value = isEnIglesia ? '' : (event.lugar || '');
+
+        // Populate contacto checkbox
+        const tieneContactoEdit = document.getElementById('editEncuentroTieneContacto');
+        const containerEditContacto = document.getElementById('containerEditContacto');
+        const contactoEditInput = document.getElementById('editEncuentroContacto');
+        const hasContacto = !!(event.contacto);
+        if (tieneContactoEdit) tieneContactoEdit.checked = hasContacto;
+        if (containerEditContacto) containerEditContacto.style.display = hasContacto ? 'block' : 'none';
+        if (contactoEditInput) contactoEditInput.value = event.contacto || '';
 
         // Set date input value
         const editFechaInput = document.getElementById('editEncuentroFecha');
@@ -498,19 +529,41 @@
             });
         }
 
-        // Setup Flatpickr time picker clock helpers for encounter time inputs
-        const timeInputEls = [document.getElementById('encuentroTime'), document.getElementById('editEncuentroTime')];
-        timeInputEls.forEach(timeEl => {
-            if (timeEl && typeof flatpickr !== 'undefined') {
-                flatpickr(timeEl, {
-                    enableTime: true,
-                    noCalendar: true,
-                    dateFormat: "H:i",
-                    time_24hr: true,
-                    allowInput: true
-                });
+        // Helper: sync numeric time inputs → hidden input
+        function initTimePicker(horaId, minId, hiddenId, initialTime) {
+            const horaInp = document.getElementById(horaId);
+            const minInp = document.getElementById(minId);
+            const hidden = document.getElementById(hiddenId);
+            if (!horaInp || !minInp || !hidden) return;
+
+            function update() {
+                let h = parseInt(horaInp.value, 10);
+                if (isNaN(h) || h < 0) h = 0;
+                if (h > 23) h = 23;
+                
+                let m = parseInt(minInp.value, 10);
+                if (isNaN(m) || m < 0) m = 0;
+                if (m > 59) m = 59;
+
+                const hStr = String(h).padStart(2, '0');
+                const mStr = String(m).padStart(2, '0');
+                hidden.value = `${hStr}:${mStr}`;
             }
-        });
+
+            if (initialTime) {
+                const parts = initialTime.split(':');
+                horaInp.value = parseInt(parts[0] || 19, 10);
+                minInp.value = String(parts[1] || '00').padStart(2, '0');
+            }
+            update();
+
+            ['input', 'change', 'blur'].forEach(evt => {
+                horaInp.addEventListener(evt, update);
+                minInp.addEventListener(evt, update);
+            });
+        }
+
+        initTimePicker('encuentroHoraInput', 'encuentroMinInput', 'encuentroTime', '19:00');
 
         // Toggle specific date vs recurring input in Nuevo Encuentro Modal
         const tipoSelect = document.getElementById('encuentroTipoRepeticion');
@@ -530,6 +583,28 @@
         }
 
         // Handle Nuevo Encuentro Form Submission
+        // Checkboxes toggle: lugar y contacto
+        const enIglesiaChk = document.getElementById('encuentroEnIglesia');
+        if (enIglesiaChk) {
+            enIglesiaChk.addEventListener('change', function () {
+                const cont = document.getElementById('containerEncuentroLugar');
+                if (cont) cont.style.display = this.checked ? 'none' : 'block';
+            });
+        }
+        const contactoChk = document.getElementById('encuentroTieneContacto');
+        if (contactoChk) {
+            contactoChk.addEventListener('change', function () {
+                const cont = document.getElementById('containerEncuentroContacto');
+                if (cont) cont.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+        const contactoInputEl = document.getElementById('encuentroContacto');
+        if (contactoInputEl) {
+            contactoInputEl.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 12);
+            });
+        }
+
         const formNuevo = document.getElementById('formNuevoEncuentro');
         if (formNuevo) {
             formNuevo.addEventListener('submit', async function (e) {
@@ -538,11 +613,24 @@
                 const titleInput = document.getElementById('encuentroTitle');
                 const timeInput = document.getElementById('encuentroTime');
                 const lugarInput = document.getElementById('encuentroLugar');
+                const enIglesiaCheck = document.getElementById('encuentroEnIglesia');
+                const tieneContactoCheck = document.getElementById('encuentroTieneContacto');
+                const contactoInp = document.getElementById('encuentroContacto');
                 const tipoVal = document.getElementById('encuentroTipoRepeticion').value;
 
+                const horaInp = document.getElementById('encuentroHoraInput');
+                const minInp = document.getElementById('encuentroMinInput');
                 const title = titleInput.value.trim();
-                const time = timeInput.value.trim();
-                const lugar = lugarInput.value.trim() || 'En la iglesia';
+                let time = timeInput.value.trim();
+                if (!time && horaInp && minInp) {
+                    const h = String(parseInt(horaInp.value || 0, 10)).padStart(2, '0');
+                    const m = String(parseInt(minInp.value || 0, 10)).padStart(2, '0');
+                    time = `${h}:${m}`;
+                }
+                const enIglesia = enIglesiaCheck ? enIglesiaCheck.checked : true;
+                const lugar = enIglesia ? 'En la iglesia' : (lugarInput ? lugarInput.value.trim() || 'En la iglesia' : 'En la iglesia');
+                const tieneContacto = tieneContactoCheck ? tieneContactoCheck.checked : false;
+                const contacto = tieneContacto && contactoInp ? contactoInp.value.replace(/\D/g, '').slice(0, 12) : '';
 
                 if (!title || !time) {
                     alert('Por favor completá el ministerio/título y el horario.');
@@ -554,6 +642,7 @@
                     title: title,
                     time: time,
                     lugar: lugar,
+                    contacto: contacto,
                     borderClass: getBorderClass(title)
                 };
 
@@ -647,6 +736,51 @@
         }
 
         // Handle Editar Encuentro Form
+        // Edit modal: checkbox toggles
+        const editEnIglesiaChk = document.getElementById('editEncuentroEnIglesia');
+        if (editEnIglesiaChk) {
+            editEnIglesiaChk.addEventListener('change', function () {
+                const c = document.getElementById('containerEditLugar');
+                if (c) c.style.display = this.checked ? 'none' : 'block';
+            });
+        }
+        const editContactoChk = document.getElementById('editEncuentroTieneContacto');
+        if (editContactoChk) {
+            editContactoChk.addEventListener('change', function () {
+                const c = document.getElementById('containerEditContacto');
+                if (c) c.style.display = this.checked ? 'block' : 'none';
+            });
+        }
+        const editContactoInpEl = document.getElementById('editEncuentroContacto');
+        if (editContactoInpEl) {
+            editContactoInpEl.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '').slice(0, 12);
+            });
+        }
+        // Edit modal: init time inputs on shown
+        const editarModal = document.getElementById('editarEncuentroModal');
+        if (editarModal) {
+            editarModal.addEventListener('shown.bs.modal', function () {
+                const hInp = document.getElementById('editHoraInput');
+                const mInp = document.getElementById('editMinInput');
+                const hidd = document.getElementById('editEncuentroTime');
+                function syncEdit() {
+                    let h = parseInt(hInp?.value || 0, 10);
+                    if (isNaN(h) || h < 0) h = 0; if (h > 23) h = 23;
+                    let m = parseInt(mInp?.value || 0, 10);
+                    if (isNaN(m) || m < 0) m = 0; if (m > 59) m = 59;
+                    if (hidd) hidd.value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                }
+                if (hInp && mInp) {
+                    ['input', 'change', 'blur'].forEach(evt => {
+                        hInp.addEventListener(evt, syncEdit);
+                        mInp.addEventListener(evt, syncEdit);
+                    });
+                    syncEdit();
+                }
+            });
+        }
+
         const formEditar = document.getElementById('formEditarEncuentro');
         if (formEditar) {
             formEditar.addEventListener('submit', async function (e) {
@@ -655,8 +789,22 @@
                 const id = document.getElementById('editEncuentroId').value;
                 const targetIso = document.getElementById('editEncuentroTargetIso').value;
                 const newTitle = document.getElementById('editEncuentroTitle').value.trim();
-                const newTime = document.getElementById('editEncuentroTime').value.trim();
-                const newLugar = document.getElementById('editEncuentroLugar').value.trim() || 'En la iglesia';
+                const editHoraInp = document.getElementById('editHoraInput');
+                const editMinInp = document.getElementById('editMinInput');
+                let newTime = document.getElementById('editEncuentroTime').value.trim();
+                if (!newTime && editHoraInp && editMinInp) {
+                    const h = String(parseInt(editHoraInp.value || 0, 10)).padStart(2, '0');
+                    const m = String(parseInt(editMinInp.value || 0, 10)).padStart(2, '0');
+                    newTime = `${h}:${m}`;
+                }
+                const editEnIglesiaCheck = document.getElementById('editEncuentroEnIglesia');
+                const editLugarInp = document.getElementById('editEncuentroLugar');
+                const editTieneContactoCheck = document.getElementById('editEncuentroTieneContacto');
+                const editContactoInp = document.getElementById('editEncuentroContacto');
+                const enIglesiaEdit = editEnIglesiaCheck ? editEnIglesiaCheck.checked : true;
+                const newLugar = enIglesiaEdit ? 'En la iglesia' : (editLugarInp ? editLugarInp.value.trim() || 'En la iglesia' : 'En la iglesia');
+                const tieneContactoEdit = editTieneContactoCheck ? editTieneContactoCheck.checked : false;
+                const newContacto = tieneContactoEdit && editContactoInp ? editContactoInp.value.replace(/\D/g, '').slice(0, 12) : '';
                 const rawNewFecha = document.getElementById('editEncuentroFecha').value.trim();
                 const isCancelled = document.getElementById('editEncuentroCancelled').checked;
                 const scopeRadio = document.querySelector('input[name="editScopeRadio"]:checked');
@@ -684,10 +832,10 @@
                         filtered.push({ encuentroId: id, fecha: targetIso, cancelled: true });
                         await saveOverrides(filtered);
                     } else if (!item.isRecurring) {
-                        // Single date event modification
                         item.title = newTitle;
                         item.time = newTime;
                         item.lugar = newLugar;
+                        item.contacto = newContacto;
                         item.borderClass = getBorderClass(newTitle);
                         if (newIsoFecha) {
                             item.fecha = newIsoFecha;
@@ -696,10 +844,10 @@
                         }
                         await saveEncuentros(list);
                     } else if (editScope === 'permanente') {
-                        // Update main recurring object permanently
                         item.title = newTitle;
                         item.time = newTime;
                         item.lugar = newLugar;
+                        item.contacto = newContacto;
                         item.borderClass = getBorderClass(newTitle);
                         await saveEncuentros(list);
                     } else {
@@ -731,6 +879,7 @@
                                 title: newTitle,
                                 time: newTime,
                                 lugar: newLugar,
+                                contacto: newContacto,
                                 cancelled: false
                             });
                             await saveOverrides(filtered);

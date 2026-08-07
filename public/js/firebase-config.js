@@ -19,7 +19,6 @@ if (!firebase.apps.length) {
 
 // Exportar referencias para usar en otros archivos
 const db = firebase.firestore();
-const storage = firebase.storage();
 const auth = firebase.auth();
 
 // Auth anónimo (opcional, solo si necesitas permisos de lectura/escritura)

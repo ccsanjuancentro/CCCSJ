@@ -32,11 +32,6 @@
 
         <link href="css/tooplate-little-fashion.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-        <script type="module" src="js/firebase-events.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script type="application/ld+json">
             {
@@ -277,7 +272,7 @@
                             <span class="badge bg-danger text-white rounded-3 px-4 py-2 font-weight-bold text-uppercase shadow-sm d-inline-block" style="font-size: 20px; letter-spacing: 1.5px;">Novedades</span>
                         </div>
                         <!-- Controles de Administrador -->
-                        <div id="adminAnunciosBar" class="d-flex align-items-center gap-2 my-2" style="display: none !important;">
+                        <div id="adminAnunciosBar" class="align-items-center gap-2 my-2" style="display: none;">
                             <button class="btn text-white btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" style="background-color: #fd7e14; border-color: #fd7e14;" data-bs-toggle="modal" data-bs-target="#nuevoAnuncioModal">
                                 <i class="bi bi-plus-lg me-1"></i> Publicar Novedad
                             </button>
@@ -298,7 +293,7 @@
                             <h2 class="font-weight-bold text-dark mb-0" style="font-size: 32px;">Próximos Encuentros</h2>
                         </div>
                         <!-- Controles de Administrador para Encuentros -->
-                        <div id="adminEncuentrosBar" class="d-flex align-items-center gap-2 my-2" style="display: none !important;">
+                        <div id="adminEncuentrosBar" class="align-items-center gap-2 my-2" style="display: none;">
                             <button class="btn btn-success btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#nuevoEncuentroModal">
                                 <i class="bi bi-plus-lg me-1"></i> Nuevo Encuentro
                             </button>
@@ -331,7 +326,7 @@
                         <div class="text-center text-md-start" id="destacadosTitleBadge">
                             <span class="badge bg-primary text-white rounded-3 px-4 py-2 font-weight-bold text-uppercase shadow-sm d-inline-block" style="font-size: 20px; letter-spacing: 1.5px;">Destacados</span>
                         </div>
-                        <div id="adminDestacadosBar" class="d-flex align-items-center gap-2 my-2" style="display: none !important;">
+                        <div id="adminDestacadosBar" class="align-items-center gap-2 my-2" style="display: none;">
                             <button class="btn btn-primary btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#nuevoDestacadoModal">
                                 <i class="bi bi-plus-lg me-1"></i> Subir Banner
                             </button>
@@ -352,12 +347,27 @@
                             <h2 class="font-weight-bold text-white mb-3" style="font-size: 36px; letter-spacing: 0.5px;">
                                 ¿Querés saber más de nosotros?
                             </h2>
-                            <p class="mb-4 mx-auto font-weight-bold" style="max-width: 750px; font-size: 21px; color: rgba(255, 255, 255, 0.95) !important;">
-                                Conocé nuestros ministerios, espacios y cómo podés ser parte de nuestra comunidad.
+                            <p class="mb-4 mx-auto font-weight-bold" style="max-width: 750px; font-size: 20px; color: rgba(255, 255, 255, 0.95) !important;">
+                                Descubrí nuestros espacios, ministerios y sé parte de la comunidad.
                             </p>
-                            <a href="conecta.html" class="btn text-white rounded-pill px-5 py-3 font-weight-bold shadow-lg text-uppercase d-inline-flex align-items-center justify-content-center" style="background-color: #fd7e14; border-color: #fd7e14; font-size: 15px; letter-spacing: 1px; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#e66e0d';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#fd7e14';">
-                                <i class="bi bi-people-fill me-2 fs-5"></i> Conectate con Nosotros
-                            </a>
+                            
+                            <div class="d-flex flex-column flex-sm-row align-items-center justify-content-center gap-3">
+                                <a href="conecta.html" class="btn text-white rounded-pill px-5 py-3 font-weight-bold shadow-lg text-uppercase d-inline-flex align-items-center justify-content-center" style="background-color: #fd7e14; border-color: #fd7e14; font-size: 15px; letter-spacing: 1px; transition: transform 0.2s ease, background-color 0.2s ease;" onmouseover="this.style.transform='scale(1.04)'; this.style.backgroundColor='#e66e0d';" onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#fd7e14';">
+                                    <i class="bi bi-arrow-right-circle-fill me-2 fs-5"></i> Ir a Conecta
+                                </a>
+
+                                <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
+                                    <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 46px; height: 46px; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';" title="Instagram">
+                                        <i class="bi bi-instagram fs-5"></i>
+                                    </a>
+                                    <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 46px; height: 46px; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';" title="Facebook">
+                                        <i class="bi bi-facebook fs-5"></i>
+                                    </a>
+                                    <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light rounded-circle p-2 d-inline-flex align-items-center justify-content-center" style="width: 46px; height: 46px; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)';" onmouseout="this.style.transform='scale(1)';" title="YouTube">
+                                        <i class="bi bi-youtube fs-5"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -498,7 +508,7 @@
                             <div class="col-12 text-center position-relative">
                                 <h2 class="mb-5">Próximos Eventos</h2>
                                 <!-- Controles de Administrador -->
-                                <div id="adminEventosBar" class="d-flex align-items-center justify-content-center gap-2 mb-4" style="display: none !important;">
+                                <div id="adminEventosBar" class="align-items-center justify-content-center gap-2 mb-4" style="display: none;">
                                     <button class="btn text-white btn-sm rounded-pill px-4 py-2 font-weight-bold shadow-sm" style="background-color: #20c997; border-color: #20c997;" data-bs-toggle="modal" data-bs-target="#nuevoEventoModal">
                                         <i class="bi bi-plus-lg me-1"></i> Agregar Evento
                                     </button>
@@ -671,15 +681,44 @@
                         <input type="text" class="form-control py-2" id="encuentroTitle" placeholder="Ej: Adolescentes, Jóvenes, Evento Especial..." required style="border-radius: 8px;">
                     </div>
                     <div class="mb-3">
-                        <label for="encuentroTime" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Horario</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-clock-fill text-primary"></i></span>
-                            <input type="text" class="form-control py-2 border-start-0" id="encuentroTime" placeholder="Ej: 19:00" required style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        <label class="form-label text-muted font-weight-bold" style="font-size: 14px;">Horario</label>
+                        <div class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-center gap-3">
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Hora</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="encuentroHoraInput" min="0" max="23" value="19" style="width: 75px; border-radius: 8px;">
+                            </div>
+                            <span class="fs-3 fw-bold text-muted mt-3">:</span>
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Minutos</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="encuentroMinInput" min="0" max="59" step="5" value="00" style="width: 75px; border-radius: 8px;">
+                            </div>
+                        </div>
+                        <input type="hidden" id="encuentroTime" required>
+                    </div>
+                    <!-- Lugar con checkbox -->
+                    <div class="mb-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="encuentroEnIglesia" checked>
+                            <label class="form-check-label text-muted font-weight-bold" for="encuentroEnIglesia" style="font-size: 14px;">
+                                <i class="bi bi-building me-1"></i> En la iglesia
+                            </label>
+                        </div>
+                        <div id="containerEncuentroLugar" style="display: none;">
+                            <input type="text" class="form-control py-2" id="encuentroLugar" placeholder="Indicá dónde será el encuentro..." style="border-radius: 8px;">
                         </div>
                     </div>
+                    <!-- Contacto con checkbox -->
                     <div class="mb-3">
-                        <label for="encuentroLugar" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Lugar (Opcional si es en la iglesia)</label>
-                        <input type="text" class="form-control py-2" id="encuentroLugar" placeholder="En la iglesia" style="border-radius: 8px;">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="encuentroTieneContacto">
+                            <label class="form-check-label text-muted font-weight-bold" for="encuentroTieneContacto" style="font-size: 14px;">
+                                <i class="bi bi-telephone-fill me-1"></i> Agregar contacto
+                            </label>
+                        </div>
+                        <div id="containerEncuentroContacto" style="display: none;">
+                            <input type="tel" class="form-control py-2" id="encuentroContacto" placeholder="Ej: 1123456789" maxlength="12" style="border-radius: 8px;" inputmode="numeric" pattern="[0-9]*">
+                            <small class="text-muted" style="font-size: 11px;">Máximo 12 dígitos. Solo números.</small>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="encuentroTipoRepeticion" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Frecuencia / Tipo</label>
@@ -764,15 +803,44 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="editEncuentroTime" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Horario</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted border-end-0" style="border-top-left-radius: 8px; border-bottom-left-radius: 8px;"><i class="bi bi-clock-fill text-primary"></i></span>
-                            <input type="text" class="form-control py-2 border-start-0" id="editEncuentroTime" placeholder="Ej: 19:00" required style="border-top-right-radius: 8px; border-bottom-right-radius: 8px; background-color: #fff;">
+                        <label class="form-label text-muted font-weight-bold" style="font-size: 14px;">Horario</label>
+                        <div class="p-3 bg-light rounded-3 border d-flex align-items-center justify-content-center gap-3">
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Hora</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="editHoraInput" min="0" max="23" value="19" style="width: 75px; border-radius: 8px;">
+                            </div>
+                            <span class="fs-3 fw-bold text-muted mt-3">:</span>
+                            <div class="text-center">
+                                <label class="text-muted d-block small mb-1">Minutos</label>
+                                <input type="number" class="form-control text-center fw-bold fs-4 py-1" id="editMinInput" min="0" max="59" step="5" value="00" style="width: 75px; border-radius: 8px;">
+                            </div>
+                        </div>
+                        <input type="hidden" id="editEncuentroTime" required>
+                    </div>
+                    <!-- Lugar con checkbox -->
+                    <div class="mb-3">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="editEncuentroEnIglesia" checked>
+                            <label class="form-check-label text-muted font-weight-bold" for="editEncuentroEnIglesia" style="font-size: 14px;">
+                                <i class="bi bi-building me-1"></i> En la iglesia
+                            </label>
+                        </div>
+                        <div id="containerEditLugar" style="display: none;">
+                            <input type="text" class="form-control py-2" id="editEncuentroLugar" placeholder="Indicá dónde será el encuentro..." style="border-radius: 8px;">
                         </div>
                     </div>
+                    <!-- Contacto con checkbox -->
                     <div class="mb-3">
-                        <label for="editEncuentroLugar" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Lugar</label>
-                        <input type="text" class="form-control py-2" id="editEncuentroLugar" style="border-radius: 8px;">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="editEncuentroTieneContacto">
+                            <label class="form-check-label text-muted font-weight-bold" for="editEncuentroTieneContacto" style="font-size: 14px;">
+                                <i class="bi bi-telephone-fill me-1"></i> Contacto
+                            </label>
+                        </div>
+                        <div id="containerEditContacto" style="display: none;">
+                            <input type="tel" class="form-control py-2" id="editEncuentroContacto" placeholder="Ej: 1123456789" maxlength="12" style="border-radius: 8px;" inputmode="numeric" pattern="[0-9]*">
+                            <small class="text-muted" style="font-size: 11px;">Máximo 12 dígitos. Solo números.</small>
+                        </div>
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top justify-content-between align-items-center">
@@ -799,7 +867,23 @@
         <script src="js/custom.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+
+        <!-- Firebase (para Firestore) -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+        <!-- Supabase (para Storage de imágenes en Destacados) -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+        <!-- Configuración global -->
+        <script src="js/firebase-config.js"></script>
+        <script src="js/supabase-config.js"></script>
+
+        <!-- Managers (usan db y supabaseClient globales) -->
+        <script src="js/anunciosManager.js"></script>
+
+        <!-- UI: Novedades (Firebase), Destacados (Supabase), Encuentros (Firebase) -->
         <script src="js/anuncios.js"></script>
         <script src="js/destacados.js"></script>
         <script src="js/encuentros.js"></script>

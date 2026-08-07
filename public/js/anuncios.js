@@ -107,6 +107,17 @@
   document.addEventListener('DOMContentLoaded', async () => {
     await renderAnuncios();
 
+    // Inicializar flatpickr para el campo de fecha
+    const fechaAnuncioEl = document.getElementById('anuncioFechaFin');
+    if (fechaAnuncioEl && typeof flatpickr !== 'undefined') {
+      flatpickr(fechaAnuncioEl, {
+        dateFormat: 'd/m/Y',
+        locale: (typeof flatpickr.l10ns !== 'undefined' && flatpickr.l10ns.es) ? flatpickr.l10ns.es : 'es',
+        minDate: 'today',
+        allowInput: true
+      });
+    }
+
     // Formulario para nuevo anuncio
     const formNuevo = document.getElementById('formNuevoAnuncio');
     if (formNuevo) {

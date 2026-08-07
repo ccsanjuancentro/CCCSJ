@@ -21,8 +21,10 @@
     
     // Supabase Configuration
     const SUPABASE_URL = "https://xgwlzndirvqzmaikdzzi.supabase.co";
-    const SUPABASE_KEY = "sb_secret_f4_ho1Wm63F31-7_X1PMcg_7rXrfynR";
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_ANON_KEY = "sb_publishable_Sy8pM68ESM-AsnXbE0rUcA_3Q7bvr7C";
+    const supabaseClient = (typeof window !== 'undefined' && window.supabaseClient)
+        ? window.supabaseClient
+        : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let authPromise = null;
     function ensureAuthenticated() {
@@ -479,8 +481,8 @@
                     await renderDestacados();
                     alert(`¡Destacado publicado con éxito! Estará visible hasta el ${dateDMY}.`);
                 } catch (err) {
-                    console.error('Error saving to Firebase:', err);
-                    alert('Ocurrió un error al subir el archivo a Firebase.');
+                    console.error('Error saving to Supabase:', err);
+                    alert('Ocurrió un error al subir el archivo.');
                 } finally {
                     if (submitBtn) {
                         submitBtn.disabled = false;
