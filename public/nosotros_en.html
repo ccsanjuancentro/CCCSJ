@@ -411,6 +411,7 @@ h1 {
                     <div class="modal-content">
                         <div class="modal-body">
                             <form id="churchSelectionForm">
+                                <input type="hidden" name="asunto" value="Una persona quiere congregarse">
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Name</label>
                                     <input type="text" class="form-control" id="name" name="name" required>
@@ -421,7 +422,7 @@ h1 {
                                 </div>
                                 <div class="mb-3">
                                     <label for="church" class="form-label">Select a church</label>
-                                    <select class="form-control" id="church" name="church" required>
+                                    <select class="form-control" id="church" name="space" required>
                                         <option value="">Select...</option>
                                         <option value="Centro">San Juan - Center</option>
                                         <option value="Cochagual">Cochagual</option>
@@ -483,18 +484,9 @@ h1 {
                         <br>
                     </div>
 
-                    <div class="col-lg-3 col-4">
-                        <h5 class="text-white mb-3">Social</h5>
-
-                        <ul class="social-icon">
-
-                            <li><a href="https://www.facebook.com/comunidadcristianadelcentro/" class="social-icon-link bi-facebook"></a></li>
-
-                            <li><a href="https://www.youtube.com/@comunidadcristianasanjuan3662" class="social-icon-link bi-youtube"></a></li>
-
-                            <li><a href="https://www.instagram.com/comunidadcristianadelcentro?igsh=d3FnazZhczluN2Rz" class="social-icon-link bi-instagram"></a></li>
-                            <li><a href="sign-in.html" class="social-icon-link bi-person"></a></li>
-
+                                        <div class="col-lg-3 col-4 d-flex justify-content-end align-items-center">
+                        <ul class="social-icon mb-0">
+                            <li><a href="sign-in.html" class="social-icon-link bi-person" style="font-size: 1.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #333; border-radius: 50%; color: white;"></a></li>
                         </ul>
                     </div>
 
@@ -510,16 +502,7 @@ h1 {
             document.getElementById('churchSelectionForm').addEventListener('submit', function(event) {
                 event.preventDefault();
         
-                var templateParams = {
-                    name: document.getElementById('name').value,
-                    phone: document.getElementById('phone').value,
-                    tipo_solicitud: 'connect with a church',
-                    label_campo: 'Church / Location:',
-                    valor_campo: document.getElementById('church').value,
-                    church: document.getElementById('church').value
-                };
-
-                emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
+                emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
                 .then(function(response) {
                     Swal.fire({
                         icon: 'success',

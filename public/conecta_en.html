@@ -490,7 +490,7 @@
                         </div>
                         <div class="modal-body p-4">
                             <form id="churchSelectionForm">
-                                <input type="hidden" name="tipo_solicitud" value="Conectar">
+                                <input type="hidden" name="asunto" value="Una persona quiere conectar">
                                 <div class="mb-3">
                                     <label for="name" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Full name</label>
                                     <input type="text" class="form-control py-2" id="name" name="name" placeholder="Your name" required style="border-radius: 8px;">
@@ -501,7 +501,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="espacio_grupo" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Select a connection space</label>
-                                    <select class="form-select py-2" id="espacio_grupo" name="church" required style="border-radius: 8px;">
+                                    <select class="form-select py-2" id="espacio_grupo" name="space" required style="border-radius: 8px;">
                                         <option value="">Select...</option>
                                         <option value="Reunión Dominical">Sunday Service</option>
                                         <option value="Grupo de Oración">Prayer Meeting</option>
@@ -612,18 +612,9 @@
                         <br>
                     </div>
 
-                    <div class="col-lg-3 col-4">
-                        <h5 class="text-white mb-3">Social</h5>
-
-                        <ul class="social-icon">
-
-                            <li><a href="https://www.facebook.com/comunidadcristianadelcentro/" class="social-icon-link bi-facebook"></a></li>
-
-                            <li><a href="https://www.youtube.com/@comunidadcristianasanjuan3662" class="social-icon-link bi-youtube"></a></li>
-
-                            <li><a href="https://www.instagram.com/comunidadcristianadelcentro?igsh=d3FnazZhczluN2Rz" class="social-icon-link bi-instagram"></a></li>
-                            <li><a href="sign-in.html" class="social-icon-link bi-person"></a></li>
-
+                                        <div class="col-lg-3 col-4 d-flex justify-content-end align-items-center">
+                        <ul class="social-icon mb-0">
+                            <li><a href="sign-in.html" class="social-icon-link bi-person" style="font-size: 1.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background-color: #333; border-radius: 50%; color: white;"></a></li>
                         </ul>
                     </div>
 
@@ -865,7 +856,7 @@
                         </div>
                         <div class="modal-body p-4">
                             <form id="serveSelectionForm">
-                                <input type="hidden" name="tipo_solicitud" value="Servir">
+                                <input type="hidden" name="asunto" value="Una persona quiere servir">
                                 <div class="mb-3">
                                     <label for="serveName" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Full name</label>
                                     <input type="text" class="form-control py-2" id="serveName" name="name" placeholder="Your name" required style="border-radius: 8px;">
@@ -877,7 +868,7 @@
                                 <div class="mb-3">
                                     <label for="ministrySelectDisplay" class="form-label text-muted font-weight-bold" style="font-size: 14px;">Ministry</label>
                                     <input type="text" class="form-control py-2 bg-light fw-bold text-primary" id="ministrySelectDisplay" readonly style="border-radius: 8px;">
-                                    <input type="hidden" id="ministrySelect" name="church">
+                                    <input type="hidden" id="ministrySelect" name="space">
                                 </div>
                                 <button type="submit" class="btn custom-btn w-100 py-3 mt-4 d-flex align-items-center justify-content-center">
                                     <i class="bi bi-heart-fill me-2"></i> Send Application
@@ -962,7 +953,21 @@
             document.getElementById('churchSelectionForm').addEventListener('submit', function(event) {
                 event.preventDefault();
         
-                emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
+                var espacioVal = document.getElementById('espacio_grupo').value;
+                var nameVal = document.getElementById('name').value;
+                var phoneVal = document.getElementById('phone').value;
+
+                var templateParams = {
+                    asunto: 'Una persona quiere conectar',
+                    tipo_solicitud: 'Conectar',
+                    name: nameVal,
+                    phone: phoneVal,
+                    label_campo: 'Group / Space:',
+                    valor_campo: espacioVal,
+                    church: espacioVal
+                };
+
+                emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
                     .then(function(response) {
                         Swal.fire({
                             icon: 'success',
@@ -989,11 +994,19 @@
             if (serveRequestModal) {
                 serveRequestModal.addEventListener('show.bs.modal', function (event) {
                     var button = event.relatedTarget;
-                    var ministry = button.getAttribute('data-ministry') || '';
+                    var ministry = button ? (button.getAttribute('data-ministry') || '') : '';
                     var hiddenInput = serveRequestModal.querySelector('#ministrySelect');
                     var displayInput = serveRequestModal.querySelector('#ministrySelectDisplay');
                     if (hiddenInput) hiddenInput.value = ministry;
                     if (displayInput) displayInput.value = ministry;
+
+                    if (button) {
+                        var parentModalEl = button.closest('.modal');
+                        if (parentModalEl && parentModalEl !== serveRequestModal) {
+                            var parentModal = bootstrap.Modal.getInstance(parentModalEl);
+                            if (parentModal) parentModal.hide();
+                        }
+                    }
                 });
             }
 
@@ -1003,7 +1016,21 @@
                 serveForm.addEventListener('submit', function(event) {
                     event.preventDefault();
             
-                    emailjs.sendForm('service_v7qrfav', 'template_elikzyj', this)
+                    var ministryVal = document.getElementById('ministrySelect').value;
+                    var nameVal = document.getElementById('serveName').value;
+                    var phoneVal = document.getElementById('servePhone').value;
+
+                    var templateParams = {
+                        asunto: 'Una persona quiere servir',
+                        tipo_solicitud: 'Servir',
+                        name: nameVal,
+                        phone: phoneVal,
+                        label_campo: 'Ministry:',
+                        valor_campo: ministryVal,
+                        church: ministryVal
+                    };
+
+                    emailjs.send('service_v7qrfav', 'template_elikzyj', templateParams)
                         .then(function(response) {
                             Swal.fire({
                                 icon: 'success',
